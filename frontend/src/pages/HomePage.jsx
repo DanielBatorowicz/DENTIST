@@ -11,12 +11,48 @@ import BookingModal from "@/components/BookingModal";
 import useSEO from "@/hooks/useSEO";
 
 const featuredServices = [
-  { icon: Shield, title: "Check-ups & Cleanings", desc: "Preventive care to keep your smile healthy and bright with thorough professional cleaning." },
-  { icon: Sparkles, title: "Teeth Whitening", desc: "Achieve a radiant, confident smile with our safe and clinically proven whitening treatments." },
-  { icon: CircleDot, title: "Dental Implants", desc: "Permanent, natural-looking tooth replacements that restore full function and aesthetics." },
-  { icon: Star, title: "Veneers", desc: "Porcelain veneers crafted to transform and perfect the appearance of your smile." },
-  { icon: AlignCenter, title: "Orthodontics", desc: "Discreet teeth straightening with Invisalign and modern braces for all ages." },
-  { icon: Heart, title: "Pediatric Dentistry", desc: "Gentle, friendly dental care tailored to make children feel safe and comfortable." },
+  {
+    icon: Shield,
+    title: "Check-ups & Cleanings",
+    desc: "Preventive care to keep your smile healthy and bright with thorough professional cleaning.",
+    image: "https://images.pexels.com/photos/6627527/pexels-photo-6627527.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
+    imageAlt: "Professional dental examination with dental mirror and tools",
+  },
+  {
+    icon: Sparkles,
+    title: "Teeth Whitening",
+    desc: "Achieve a radiant, confident smile with our safe and clinically proven whitening treatments.",
+    image: "https://images.pexels.com/photos/5622271/pexels-photo-5622271.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
+    imageAlt: "Dentist performing professional teeth whitening treatment on patient",
+  },
+  {
+    icon: CircleDot,
+    title: "Dental Implants",
+    desc: "Permanent, natural-looking tooth replacements that restore full function and aesthetics.",
+    image: "https://images.unsplash.com/photo-1771442873035-474765b40ac6?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=700&h=400&fit=crop",
+    imageAlt: "Gloved dentist holding a titanium dental implant and ceramic crown",
+  },
+  {
+    icon: Star,
+    title: "Veneers",
+    desc: "Porcelain veneers crafted to transform and perfect the appearance of your smile.",
+    image: "https://images.pexels.com/photos/6627564/pexels-photo-6627564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
+    imageAlt: "Dentist carefully applying a porcelain veneer to a patient's tooth",
+  },
+  {
+    icon: AlignCenter,
+    title: "Orthodontics",
+    desc: "Discreet teeth straightening with Invisalign and modern braces for all ages.",
+    image: "https://images.unsplash.com/photo-1651180352574-669683817463?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=700&h=400&fit=crop",
+    imageAlt: "Clear Invisalign aligner in its case for discreet teeth straightening",
+  },
+  {
+    icon: Heart,
+    title: "Pediatric Dentistry",
+    desc: "Gentle, friendly dental care tailored to make children feel safe and comfortable.",
+    image: "https://images.pexels.com/photos/8260438/pexels-photo-8260438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
+    imageAlt: "Happy child smiling in dental chair with friendly dental team",
+  },
 ];
 
 const whyUs = [
@@ -264,13 +300,27 @@ export default function HomePage() {
               <div
                 key={service.title}
                 data-testid={`service-card-${service.title.toLowerCase().replace(/\s/g, "-")}`}
-                className="bg-white rounded-2xl p-7 border border-slate-100 card-hover group"
+                className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] card-hover group flex flex-col"
               >
-                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-5 group-hover:bg-blue-100 transition-colors">
-                  <service.icon size={22} className="text-blue-600" />
+                {/* Image */}
+                <div className="h-44 overflow-hidden flex-shrink-0">
+                  <img
+                    src={service.image}
+                    alt={service.imageAlt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
                 </div>
-                <h3 className="font-heading text-xl font-semibold text-slate-900 mb-2">{service.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{service.desc}</p>
+                {/* Content */}
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 bg-blue-50 group-hover:bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors">
+                      <service.icon size={17} className="text-blue-600" />
+                    </div>
+                    <h3 className="font-heading text-lg font-semibold text-slate-900">{service.title}</h3>
+                  </div>
+                  <p className="text-slate-500 text-sm leading-relaxed flex-1">{service.desc}</p>
+                </div>
               </div>
             ))}
           </div>
