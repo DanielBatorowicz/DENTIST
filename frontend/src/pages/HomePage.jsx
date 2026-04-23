@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  Smile, Shield, Sparkles, CircleDot, Star, AlignCenter,
-  Activity, AlertCircle, Heart, Award, Cpu, Home, ClipboardList,
+  Shield, Sparkles, CircleDot, Star, AlignCenter,
+  Heart, Award, Cpu, Home, ClipboardList,
   Calendar, ChevronRight, Phone, Quote, CheckCircle
 } from "lucide-react";
 import Header from "@/components/Header";
@@ -73,31 +73,39 @@ export default function HomePage() {
       <Header />
 
       {/* Hero */}
-      <section data-testid="hero-section" className="pt-20 min-h-screen flex items-center hero-gradient relative overflow-hidden">
+      <section data-testid="hero-section" className="pt-20 min-h-screen flex items-center bg-white relative overflow-hidden">
+        {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 right-0 w-1/2 h-full bg-blue-50/40 rounded-l-[4rem]" />
-          <div className="absolute top-40 right-20 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-[55%] h-full bg-gradient-to-br from-blue-50/80 to-blue-100/50 rounded-l-[5rem]" />
+          <div className="absolute top-1/3 right-10 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl" />
+          {/* Dot grid pattern */}
+          <div className="absolute top-24 left-0 w-48 h-48 opacity-[0.03]" style={{
+            backgroundImage: "radial-gradient(circle, #2563EB 1.5px, transparent 1.5px)",
+            backgroundSize: "24px 24px"
+          }} />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative w-full">
           {/* Left */}
           <div className="animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-7">
               <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
-              Trusted Dental Care in London
+              Trusted Dental Care · London, W1
             </div>
-            <h1 className="font-heading text-5xl md:text-6xl lg:text-[4.5rem] leading-tight font-medium text-slate-900 mb-6">
+            <h1 className="font-heading text-5xl md:text-6xl lg:text-[4.5rem] leading-[1.1] font-medium text-slate-900 mb-6">
               Your Smile,<br />
-              <span className="text-blue-600 italic">Our Passion</span>
+              <span className="text-blue-600 italic">Our Passion.</span>
             </h1>
-            <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
-              At Bright Smile Dental Care, we combine clinical excellence with genuine compassion to deliver a dental experience that's comfortable, transparent, and tailored to you.
+            <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8 max-w-md">
+              We combine clinical excellence with genuine compassion to deliver a dental experience that's comfortable, transparent, and tailored entirely to you.
             </p>
             <div className="flex flex-wrap gap-4 mb-10">
               <button
                 data-testid="hero-book-btn"
                 onClick={() => setBookingOpen(true)}
-                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all"
+                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all flex items-center gap-2"
               >
+                <Calendar size={17} />
                 Book an Appointment
               </button>
               <Link
@@ -108,41 +116,46 @@ export default function HomePage() {
                 Explore Services <ChevronRight size={18} />
               </Link>
             </div>
-            {/* Trust badges */}
-            <div className="flex flex-wrap gap-5 text-sm text-slate-600">
-              {["NHS Registered", "CQC Regulated", "BDA Member"].map((badge) => (
-                <div key={badge} className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-green-500 flex-shrink-0" />
-                  {badge}
+            {/* Trust row */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-600 pt-6 border-t border-slate-100">
+              {[
+                { icon: CheckCircle, label: "NHS Registered", color: "text-green-500" },
+                { icon: CheckCircle, label: "CQC Outstanding", color: "text-green-500" },
+                { icon: CheckCircle, label: "BDA Member", color: "text-green-500" },
+              ].map((badge) => (
+                <div key={badge.label} className="flex items-center gap-2">
+                  <badge.icon size={16} className={badge.color} />
+                  <span className="font-medium">{badge.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right - Image */}
+          {/* Right — Image */}
           <div className="relative animate-fade-in-up animate-delay-200">
+            {/* Main image */}
             <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[4/5]">
               <img
                 src="https://images.pexels.com/photos/14052564/pexels-photo-14052564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1080&w=1920"
-                alt="Friendly dentist with patient at Bright Smile Dental Care"
+                alt="Dr. Carter with patient at Bright Smile Dental Care London"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 to-transparent" />
             </div>
-            {/* Floating card */}
-            <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-5 border border-slate-100 max-w-[200px]">
+            {/* Rating card */}
+            <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-xl p-5 border border-slate-100 min-w-[190px]">
               <div className="flex gap-1 mb-2">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={14} className="text-amber-400 fill-amber-400" />
                 ))}
               </div>
-              <p className="text-slate-800 font-semibold text-sm">4.9/5 Rating</p>
-              <p className="text-slate-500 text-xs mt-0.5">From 500+ reviews</p>
+              <p className="text-slate-800 font-bold text-base">4.9 / 5 Rating</p>
+              <p className="text-slate-500 text-xs mt-0.5">Based on 500+ Google reviews</p>
             </div>
-            {/* Floating pill */}
-            <div className="absolute -top-4 -right-4 bg-blue-600 text-white rounded-2xl shadow-lg px-4 py-3 text-center">
-              <p className="font-bold text-xl leading-none">15+</p>
-              <p className="text-blue-200 text-xs mt-0.5">Years of Care</p>
+            {/* Years pill */}
+            <div className="absolute -top-5 -right-5 bg-blue-600 text-white rounded-2xl shadow-xl px-5 py-4 text-center">
+              <p className="font-heading font-bold text-2xl leading-none">15+</p>
+              <p className="text-blue-200 text-xs mt-1">Years of<br/>Expert Care</p>
             </div>
           </div>
         </div>
@@ -163,55 +176,68 @@ export default function HomePage() {
       </section>
 
       {/* Intro */}
-      <section data-testid="intro-section" className="py-24 bg-white">
+      <section data-testid="intro-section" className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">About Bright Smile</p>
+          <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-5 leading-tight">
+            Dental Care Built Around <em>You</em>
+          </h2>
+          <p className="text-slate-600 text-base leading-relaxed mb-3 max-w-2xl mx-auto">
+            Founded in 2008 by Dr. Emily Carter, Bright Smile Dental Care has grown into one of London's most respected practices — built on transparency, clinical excellence, and genuine care.
+          </p>
+          <p className="text-slate-500 text-base leading-relaxed mb-7 max-w-2xl mx-auto">
+            Whether it's a routine check-up, a smile makeover, or urgent care — our experienced team is here for you.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/about" data-testid="intro-about-btn" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
+              Learn About Our Practice <ChevronRight size={18} />
+            </Link>
+            <button data-testid="intro-book-btn" onClick={() => setBookingOpen(true)} className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3 rounded-full transition-all">
+              Book a Consultation
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Dr. Carter — dark card */}
+      <section data-testid="meet-doctor-section" className="py-0 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="relative">
-              <div className="rounded-[2rem] overflow-hidden shadow-xl aspect-[4/3]">
+          <div className="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0 items-center">
+              {/* Image */}
+              <div className="relative h-72 md:h-full min-h-[360px] overflow-hidden">
                 <img
-                  src="https://images.pexels.com/photos/7789620/pexels-photo-7789620.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                  alt="Modern dental clinic interior"
-                  className="w-full h-full object-cover"
+                  src="https://images.pexels.com/photos/6809667/pexels-photo-6809667.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=900&w=600"
+                  alt="Dr. Emily Carter, Principal Dentist at Bright Smile Dental Care"
+                  className="w-full h-full object-cover object-top"
                 />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-slate-900/60 hidden md:block" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent md:hidden" />
               </div>
-              <div className="absolute top-6 -right-6 bg-white rounded-2xl shadow-lg p-4 border border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                    <CheckCircle size={20} className="text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800 text-sm">CQC Regulated</p>
-                    <p className="text-slate-500 text-xs">Outstanding Rating</p>
-                  </div>
+              {/* Text */}
+              <div className="px-8 py-10 md:px-12 md:py-14">
+                <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3">Your Dentist</p>
+                <h2 className="font-heading text-3xl md:text-4xl font-medium text-white mb-2 leading-tight">
+                  Dr. Emily Carter
+                </h2>
+                <p className="font-heading text-lg text-blue-400 italic mb-5">BDS, MFDS RCS — 15+ Years Experience</p>
+                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                  Qualified at King's College London and one of the capital's most respected dentists. Dr. Carter specialises in making every patient — including nervous patients — feel safe, informed, and cared for.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-7">
+                  {["Invisalign Provider", "Cosmetic Dentistry", "BDA Member"].map((tag) => (
+                    <span key={tag} className="bg-white/10 border border-white/20 text-slate-300 text-xs font-medium px-3 py-1.5 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">Welcome to Bright Smile</p>
-              <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-6 leading-tight">
-                Dental Care Built Around <em>You</em>
-              </h2>
-              <p className="text-slate-600 text-base leading-relaxed mb-5">
-                Founded in 2008 and led by Dr. Emily Carter, Bright Smile Dental Care has grown to become one of London's most respected dental practices. We believe dental care should be accessible, comfortable, and completely transparent.
-              </p>
-              <p className="text-slate-600 text-base leading-relaxed mb-8">
-                Whether you're coming in for a routine check-up, interested in cosmetic treatments, or need urgent care, our experienced team is here to support you with skill, honesty, and genuine warmth.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/about"
-                  data-testid="intro-about-btn"
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
+                  data-testid="meet-doctor-link"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-3.5 rounded-full transition-all"
                 >
-                  Meet Our Team <ChevronRight size={18} />
+                  Meet Dr. Carter <ChevronRight size={16} />
                 </Link>
-                <button
-                  data-testid="intro-book-btn"
-                  onClick={() => setBookingOpen(true)}
-                  className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3 rounded-full transition-all"
-                >
-                  Book a Consultation
-                </button>
               </div>
             </div>
           </div>
@@ -258,66 +284,98 @@ export default function HomePage() {
       </section>
 
       {/* Why Choose Us */}
-      <section data-testid="why-us-section" className="py-24 bg-white">
+      <section data-testid="why-us-section" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">Why Choose Us</p>
-            <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-4">
-              The Bright Smile Difference
-            </h2>
-            <p className="text-slate-500 text-base max-w-xl mx-auto">
-              We take great pride in the standard of care we provide — and it shows in everything we do.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whyUs.map((item, idx) => (
-              <div
-                key={item.title}
-                data-testid={`why-us-card-${idx}`}
-                className="flex items-start gap-4 bg-slate-50 rounded-2xl p-6 border border-slate-100 card-hover"
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left — Text */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">Why Choose Us</p>
+              <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-5 leading-tight">
+                The Bright Smile<br /><em>Difference</em>
+              </h2>
+              <p className="text-slate-500 text-base mb-8 leading-relaxed max-w-md">
+                We take great pride in the standard of care we provide — from the moment you walk in to the follow-up call afterwards.
+              </p>
+              <button
+                data-testid="why-us-book-btn"
+                onClick={() => setBookingOpen(true)}
+                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all"
               >
-                <div className="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <item.icon size={20} className="text-blue-600" />
-                </div>
-                <div>
+                Experience It Yourself
+              </button>
+            </div>
+            {/* Right — Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {whyUs.map((item, idx) => (
+                <div
+                  key={item.title}
+                  data-testid={`why-us-card-${idx}`}
+                  className="bg-white rounded-2xl p-5 border border-slate-200 card-hover group"
+                >
+                  <div className="w-10 h-10 bg-blue-50 group-hover:bg-blue-100 rounded-xl flex items-center justify-center mb-4 transition-colors">
+                    <item.icon size={18} className="text-blue-600" />
+                  </div>
                   <h3 className="font-heading text-lg font-semibold text-slate-900 mb-1">{item.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                  <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section data-testid="testimonials-section" className="py-24 bg-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section data-testid="testimonials-section" className="py-24 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_rgba(219,234,254,0.4),_transparent_60%)]" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-14">
             <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">Patient Stories</p>
             <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-4">
               What Our Patients Say
             </h2>
+            <p className="text-slate-500 text-base max-w-lg mx-auto">Real stories from real patients who trust us with their smiles.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonials.map((t, idx) => (
-              <div
-                key={t.name}
-                data-testid={`testimonial-card-${idx}`}
-                className="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm card-hover"
-              >
-                <Quote size={22} className="text-blue-200 mb-4" />
-                <p className="text-slate-600 text-sm leading-relaxed mb-5">"{t.text}"</p>
-                <div className="flex gap-1 mb-3">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} size={13} className="text-amber-400 fill-amber-400" />
-                  ))}
+            {testimonials.map((t, idx) => {
+              const avatarColors = ["bg-blue-600", "bg-violet-600", "bg-emerald-600", "bg-amber-600"];
+              return (
+                <div
+                  key={t.name}
+                  data-testid={`testimonial-card-${idx}`}
+                  className="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.05)] card-hover flex flex-col"
+                >
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} size={14} className="text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+                  <Quote size={20} className="text-blue-100 mb-3" />
+                  <p className="text-slate-600 text-sm leading-relaxed mb-5 flex-1">"{t.text}"</p>
+                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                    <div className={`w-9 h-9 ${avatarColors[idx]} rounded-full flex items-center justify-center flex-shrink-0`}>
+                      <span className="text-white text-xs font-bold">{t.name.split(" ").map(n => n[0]).join("")}</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800 text-sm">{t.name}</p>
+                      <p className="text-slate-400 text-xs">{t.role}</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold text-slate-800 text-sm">{t.name}</p>
-                  <p className="text-slate-400 text-xs">{t.role}</p>
-                </div>
+              );
+            })}
+          </div>
+          {/* Google review badge */}
+          <div className="flex justify-center mt-10">
+            <div className="inline-flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-full px-6 py-3 text-sm text-slate-600">
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-amber-400 fill-amber-400" />)}
               </div>
-            ))}
+              <span className="font-semibold text-slate-800">4.9 / 5</span>
+              <span className="text-slate-400">·</span>
+              <span>500+ verified patient reviews</span>
+            </div>
           </div>
         </div>
       </section>

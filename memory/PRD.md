@@ -35,7 +35,7 @@ Clean, elegant, premium design with white/soft blue/light gray palette.
 - `POST /api/appointments` — Save appointment/contact form to MongoDB
 - `GET /api/appointments` — Retrieve all appointments
 
-## What's Been Implemented (April 2026)
+## What's Been Implemented (April 2026 — v2 Update)
 - [x] Full 5-page website
 - [x] Appointment booking modal (name, email, phone, service, date, time, message)
 - [x] Contact form with backend integration
@@ -44,6 +44,14 @@ Clean, elegant, premium design with white/soft blue/light gray palette.
 - [x] Mobile responsive design
 - [x] data-testid on all interactive elements
 - [x] 100% test pass rate (backend + frontend)
+- [x] **v2: Dr. Emily Carter professional photo on About page** (with credential chips, rating badge, 15+ badge)
+- [x] **v2: "Meet Dr. Carter" premium dark-card section on Homepage**
+- [x] **v2: Doctor quote section on About page** (signature blockquote)
+- [x] **v2: Timeline-style qualifications section** on About page
+- [x] **v2: Improved hero** with dot grid pattern, tighter layout, better composition
+- [x] **v2: Improved testimonials** with colored avatar initials, overall rating badge
+- [x] **v2: Why Choose Us** redesigned as split 2-column layout with feature grid
+- [x] **v2: Doctor gallery strip** showing working shot + clinic image
 
 ## Prioritized Backlog
 ### P0 (User must update)
