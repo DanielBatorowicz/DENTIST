@@ -1,0 +1,99 @@
+{
+  "theme": "light",
+  "archetype": "1 (Organic & Earthy / Medical Reassurance)",
+  "colors": {
+    "primary": "#2563EB",
+    "primary_hover": "#1D4ED8",
+    "secondary": "#0F172A",
+    "background": "#FFFFFF",
+    "surface": "#F8FAFC",
+    "surface_alt": "#F1F5F9",
+    "accent": "#DBEAFE",
+    "text_main": "#1E293B",
+    "text_muted": "#64748B"
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Manrope",
+    "scale": {
+      "h1": "text-5xl md:text-6xl tracking-tight font-medium",
+      "h2": "text-4xl md:text-5xl tracking-tight font-medium",
+      "h3": "text-2xl md:text-3xl font-medium",
+      "body": "text-base md:text-lg leading-relaxed",
+      "small": "text-sm uppercase tracking-[0.2em] font-bold text-blue-600"
+    }
+  },
+  "layout_and_spacing": {
+    "section_padding": "py-20 md:py-32",
+    "container_width": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "border_radius": "rounded-2xl md:rounded-[2rem]",
+    "gap": "gap-8 md:gap-12",
+    "bento_grid": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"
+  },
+  "components": {
+    "buttons": "rounded-full px-8 py-4 font-semibold transition-all duration-300 shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-0.5",
+    "cards": "bg-white rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow",
+    "header": "fixed w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100/50",
+    "inputs": "w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+  },
+  "visual_enhancers": {
+    "shadows": "soft, diffused ambient shadows. No harsh black drops.",
+    "gradients": "bg-gradient-to-br from-blue-50 via-white to-slate-50",
+    "glassmorphism": "backdrop-blur-xl bg-white/70 border-white/40",
+    "animations": "Framer Motion staggered fade-up for services, subtle scale on hover"
+  },
+  "media": {
+    "images": [
+      {
+        "category": "hero",
+        "url": "https://images.pexels.com/photos/14052564/pexels-photo-14052564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1080&w=1920",
+        "description": "Friendly dentist consultation, reassuring patient in modern clinic",
+        "placement": "Homepage Hero Section"
+      },
+      {
+        "category": "about",
+        "url": "https://images.pexels.com/photos/7789620/pexels-photo-7789620.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Clean, modern, and state-of-the-art medical clinic interior",
+        "placement": "About Us Page Hero / Intro"
+      },
+      {
+        "category": "services",
+        "url": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1200",
+        "description": "Clean dental setup/tools abstraction (fallback Unsplash)",
+        "placement": "Services overview background or banner"
+      },
+      {
+        "category": "testimonials",
+        "url": "https://images.unsplash.com/photo-1611690061822-b707a67bfebb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwzfHxzbWlsaW5nJTIwcGF0aWVudCUyMGRlbnRpc3R8ZW58MHx8fHwxNzc2OTM4NTczfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Smiling young woman holding toothbrush, showing healthy teeth",
+        "placement": "Testimonials section / Patient trust"
+      },
+      {
+        "category": "checkup",
+        "url": "https://images.pexels.com/photos/5622250/pexels-photo-5622250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Man smiling during a dental checkup",
+        "placement": "Why Choose Us or General Care Page"
+      }
+    ],
+    "icons": "lucide-react"
+  },
+  "pages_and_features": [
+    "Homepage (hero, intro, services overview, why choose us, testimonials, contact CTA)",
+    "About Us page (dentist intro, qualifications, approach)",
+    "Services page (10 dental services with descriptions, benefits, CTAs)",
+    "FAQ page (accordion)",
+    "Contact page (form, map, address, hours)"
+  ],
+  "instructions_to_main_agent": [
+    "1. Start by building the shared components (Header, Footer, Button, Card).",
+    "2. For the Hero section, use a split layout (text left, image right) or a full-width image with an offset overlapping card.",
+    "3. Use Cormorant Garamond for all H1, H2, and H3 headings to convey premium elegance. Use Manrope for body text.",
+    "4. Add Lucide icons to the Services section (e.g., Smile, Sparkles, Syringe, ShieldCheck) and wrap them in a soft blue circular background.",
+    "5. Ensure generous padding (`py-24`) between sections to create a calm, uncluttered feel.",
+    "6. Build the Services page with a Bento Grid layout to display the 10 services distinctively without looking like a generic list.",
+    "7. Implement Shadcn's Accordion for the FAQ section and style it to match the clean medical aesthetic.",
+    "8. Use customized Shadcn inputs for the Contact Form.",
+    "9. DO NOT use placeholder images. Rely ENTIRELY on the URLs provided in the `media` array.",
+    "10. Make sure to add `data-testid` to all interactive elements for testability."
+  ]
+}
