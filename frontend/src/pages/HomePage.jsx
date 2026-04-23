@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Smile, Shield, Sparkles, CircleDot, Star, AlignCenter,
@@ -63,6 +63,10 @@ const stats = [
 
 export default function HomePage() {
   const [bookingOpen, setBookingOpen] = useState(false);
+
+  useEffect(() => {
+    document.title = "Bright Smile Dental Care | Trusted Dentist in London";
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">

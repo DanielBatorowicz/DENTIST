@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Shield, Sparkles, CircleDot, Star, AlignCenter,
   Activity, AlertCircle, Heart, Smile, Scissors, ChevronRight
@@ -113,6 +113,10 @@ const colorMap = {
 
 export default function ServicesPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
+
+  useEffect(() => {
+    document.title = "Dental Services | Bright Smile Dental Care";
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">

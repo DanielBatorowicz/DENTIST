@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle, Award, Heart, Cpu, Users, ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -38,6 +38,10 @@ const teamStats = [
 
 export default function AboutPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
+
+  useEffect(() => {
+    document.title = "About Us | Bright Smile Dental Care";
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">

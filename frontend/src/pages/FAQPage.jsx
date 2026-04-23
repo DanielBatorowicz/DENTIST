@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -64,6 +64,10 @@ const faqs = [
 
 export default function FAQPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
+
+  useEffect(() => {
+    document.title = "FAQ | Bright Smile Dental Care";
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
