@@ -8,6 +8,7 @@ import {
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingModal from "@/components/BookingModal";
+import useSEO from "@/hooks/useSEO";
 
 const featuredServices = [
   { icon: Shield, title: "Check-ups & Cleanings", desc: "Preventive care to keep your smile healthy and bright with thorough professional cleaning." },
@@ -64,9 +65,11 @@ const stats = [
 export default function HomePage() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = "Bright Smile Dental Care | Trusted Dentist in London";
-  }, []);
+  useSEO({
+    title: "Bright Smile Dental Care | Trusted Dentist in London",
+    description: "Book an appointment at Bright Smile Dental Care on Harley Street, London. Expert general, cosmetic & emergency dentistry led by Dr. Emily Carter. New patients welcome.",
+    keywords: "dentist in London, dental clinic London, cosmetic dentist London, family dentist London, emergency dentist London, teeth whitening London, dental implants London, Harley Street dentist",
+  });
 
   return (
     <div className="min-h-screen bg-white">

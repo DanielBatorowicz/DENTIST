@@ -8,6 +8,7 @@ import {
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingModal from "@/components/BookingModal";
+import useSEO from "@/hooks/useSEO";
 
 const faqs = [
   {
@@ -65,9 +66,11 @@ const faqs = [
 export default function FAQPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = "FAQ | Bright Smile Dental Care";
-  }, []);
+  useSEO({
+    title: "Dental FAQ | Common Patient Questions | Bright Smile Dental Care",
+    description: "Answers to common dental questions: how often to visit, emergency dentistry, costs, cosmetic treatments, children's dentistry & more. London-based dental practice.",
+    keywords: "dental FAQ London, dentist questions, how often dentist, dental emergency London, dental costs London, nervous patients dentist London",
+  });
 
   return (
     <div className="min-h-screen bg-white">

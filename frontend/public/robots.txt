@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Block backend API from indexing
+Disallow: /api/
+
+Sitemap: https://brightsmiledental.co.uk/sitemap.xml

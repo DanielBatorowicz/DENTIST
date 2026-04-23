@@ -51,7 +51,14 @@ Clean, elegant, premium design with white/soft blue/light gray palette.
 - [x] **v2: Improved hero** with dot grid pattern, tighter layout, better composition
 - [x] **v2: Improved testimonials** with colored avatar initials, overall rating badge
 - [x] **v2: Why Choose Us** redesigned as split 2-column layout with feature grid
-- [x] **v2: Doctor gallery strip** showing working shot + clinic image
+- [x] **SEO v2 (April 2026)**: Full SEO overhaul
+  - `useSEO` hook — updates title, description, keywords, og:*, twitter:*, canonical per page
+  - Unique keyword-rich meta description for every page
+  - JSON-LD Dentist/LocalBusiness structured data in index.html
+  - Twitter Card meta tags
+  - og:url, og:image, og:locale, og:site_name
+  - `robots.txt` (allows all, blocks /api/)
+  - `sitemap.xml` (all 5 pages with priority weights)
 
 ## Prioritized Backlog
 ### P0 (User must update)

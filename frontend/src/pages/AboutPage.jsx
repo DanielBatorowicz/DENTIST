@@ -4,6 +4,7 @@ import { CheckCircle, Award, Heart, Cpu, Quote, ChevronRight, Star, Calendar } f
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingModal from "@/components/BookingModal";
+import useSEO from "@/hooks/useSEO";
 
 const credentials = ["BDS – King's College London", "MFDS RCS", "Invisalign Certified", "BDA Member", "CQC Regulated"];
 
@@ -42,9 +43,11 @@ const teamStats = [
 export default function AboutPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = "About Us | Bright Smile Dental Care";
-  }, []);
+  useSEO({
+    title: "About Dr. Emily Carter | Bright Smile Dental Care London",
+    description: "Meet Dr. Emily Carter BDS MFDS RCS — London's trusted principal dentist with 15+ years in general, cosmetic & restorative dentistry. Based at Harley Street, London.",
+    keywords: "Dr Emily Carter dentist London, cosmetic dentist Harley Street, experienced dentist London, dental surgeon London, about Bright Smile Dental Care",
+  });
 
   return (
     <div className="min-h-screen bg-white">

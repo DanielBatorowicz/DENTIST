@@ -6,6 +6,7 @@ import {
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingModal from "@/components/BookingModal";
+import useSEO from "@/hooks/useSEO";
 
 const services = [
   {
@@ -114,9 +115,11 @@ const colorMap = {
 export default function ServicesPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = "Dental Services | Bright Smile Dental Care";
-  }, []);
+  useSEO({
+    title: "Dental Services London | Whitening, Implants, Invisalign | Bright Smile",
+    description: "Full range of dental services in London: teeth whitening, dental implants, veneers, Invisalign, root canal, emergency care & more. Book online with Dr. Emily Carter.",
+    keywords: "dental services London, teeth whitening London, dental implants London, Invisalign London, veneers London, root canal London, cosmetic dentistry London, orthodontics London",
+  });
 
   return (
     <div className="min-h-screen bg-white">

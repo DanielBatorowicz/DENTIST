@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingModal from "@/components/BookingModal";
 import axios from "axios";
+import useSEO from "@/hooks/useSEO";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -54,9 +55,11 @@ export default function ContactPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    document.title = "Contact Us | Bright Smile Dental Care";
-  }, []);
+  useSEO({
+    title: "Contact & Book Appointment | Bright Smile Dental Care London",
+    description: "Contact Bright Smile Dental Care at 12 Harley Street, London W1G 9PG. Call +44 (0) 20 7123 4567 or book an appointment online. Same-day emergency slots available.",
+    keywords: "contact dentist London, book dental appointment London, Harley Street dentist contact, dental emergency London, dental clinic address London",
+  });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
