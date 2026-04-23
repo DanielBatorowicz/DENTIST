@@ -113,36 +113,38 @@ export default function HomePage() {
 
       {/* Hero */}
       <section data-testid="hero-section" className="pt-20 min-h-screen flex items-center bg-white relative overflow-hidden">
-        {/* Background decorative elements */}
+        {/* Background: clean right panel + subtle dot grid */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[55%] h-full bg-gradient-to-br from-blue-50/80 to-blue-100/50 rounded-l-[5rem]" />
-          <div className="absolute top-1/3 right-10 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl" />
-          {/* Dot grid pattern */}
-          <div className="absolute top-24 left-0 w-48 h-48 opacity-[0.03]" style={{
-            backgroundImage: "radial-gradient(circle, #2563EB 1.5px, transparent 1.5px)",
-            backgroundSize: "24px 24px"
-          }} />
+          <div className="absolute top-0 right-0 w-[52%] h-full bg-gradient-to-bl from-slate-50 via-blue-50/40 to-transparent" />
+          <div
+            className="absolute inset-0 opacity-[0.018]"
+            style={{ backgroundImage: "radial-gradient(#2563EB 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+          />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative w-full">
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative w-full">
           {/* Left */}
           <div className="animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-7">
-              <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" />
-              Trusted Dental Care · London, W1
+            {/* Eyebrow */}
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse flex-shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">Trusted Dental Care · London, W1</span>
             </div>
-            <h1 className="font-heading text-5xl md:text-6xl lg:text-[4.5rem] leading-[1.1] font-medium text-slate-900 mb-6">
+
+            <h1 className="font-heading text-6xl md:text-7xl lg:text-[5.5rem] leading-[0.95] font-medium text-slate-900 mb-7 tracking-tight">
               Your Smile,<br />
-              <span className="text-blue-600 italic">Our Passion.</span>
+              <span className="italic text-gradient">Our Passion.</span>
             </h1>
-            <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8 max-w-md">
-              We combine clinical excellence with genuine compassion to deliver a dental experience that's comfortable, transparent, and tailored entirely to you.
+
+            <p className="text-slate-500 text-base md:text-lg leading-relaxed mb-9 max-w-md">
+              We combine clinical excellence with genuine compassion — delivering dental care that's comfortable, transparent, and tailored entirely to you.
             </p>
+
             <div className="flex flex-wrap gap-4 mb-10">
               <button
                 data-testid="hero-book-btn"
                 onClick={() => setBookingOpen(true)}
-                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all flex items-center gap-2"
+                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all flex items-center gap-2.5"
               >
                 <Calendar size={17} />
                 Book an Appointment
@@ -150,21 +152,18 @@ export default function HomePage() {
               <Link
                 to="/services"
                 data-testid="hero-services-btn"
-                className="flex items-center gap-2 text-slate-700 hover:text-blue-600 font-semibold px-6 py-4 rounded-full border-2 border-slate-200 hover:border-blue-200 transition-all"
+                className="flex items-center gap-2 text-slate-700 hover:text-blue-600 font-semibold px-6 py-4 rounded-full border-2 border-slate-200 hover:border-blue-300 transition-all"
               >
                 Explore Services <ChevronRight size={18} />
               </Link>
             </div>
-            {/* Trust row */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-600 pt-6 border-t border-slate-100">
-              {[
-                { icon: CheckCircle, label: "NHS Registered", color: "text-green-500" },
-                { icon: CheckCircle, label: "CQC Outstanding", color: "text-green-500" },
-                { icon: CheckCircle, label: "BDA Member", color: "text-green-500" },
-              ].map((badge) => (
-                <div key={badge.label} className="flex items-center gap-2">
-                  <badge.icon size={16} className={badge.color} />
-                  <span className="font-medium">{badge.label}</span>
+
+            {/* Trust badges */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-500 pt-6 border-t border-slate-100">
+              {["NHS Registered", "CQC Outstanding", "BDA Member"].map((badge) => (
+                <div key={badge} className="flex items-center gap-2">
+                  <CheckCircle size={15} className="text-green-500 flex-shrink-0" />
+                  <span className="font-medium">{badge}</span>
                 </div>
               ))}
             </div>
@@ -172,42 +171,44 @@ export default function HomePage() {
 
           {/* Right — Image */}
           <div className="relative animate-fade-in-up animate-delay-200">
-            {/* Main image */}
             <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[4/5]">
               <img
                 src="https://images.pexels.com/photos/14052564/pexels-photo-14052564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1080&w=1920"
                 alt="Dr. Carter with patient at Bright Smile Dental Care London"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent" />
             </div>
             {/* Rating card */}
-            <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-xl p-5 border border-slate-100 min-w-[190px]">
+            <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-xl p-5 border border-slate-100 min-w-[195px]">
               <div className="flex gap-1 mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className="text-amber-400 fill-amber-400" />
-                ))}
+                {[...Array(5)].map((_, i) => <Star key={i} size={13} className="text-amber-400 fill-amber-400" />)}
               </div>
-              <p className="text-slate-800 font-bold text-base">4.9 / 5 Rating</p>
-              <p className="text-slate-500 text-xs mt-0.5">Based on 500+ Google reviews</p>
+              <p className="text-slate-900 font-bold text-base">4.9 / 5 Rating</p>
+              <p className="text-slate-400 text-xs mt-0.5">Based on 500+ Google reviews</p>
             </div>
-            {/* Years pill */}
+            {/* Years badge */}
             <div className="absolute -top-5 -right-5 bg-blue-600 text-white rounded-2xl shadow-xl px-5 py-4 text-center">
               <p className="font-heading font-bold text-2xl leading-none">15+</p>
-              <p className="text-blue-200 text-xs mt-1">Years of<br/>Expert Care</p>
+              <p className="text-blue-200 text-xs mt-1">Years of<br />Expert Care</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section data-testid="stats-section" className="py-14 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center text-white">
-            {stats.map((s) => (
-              <div key={s.label}>
-                <p className="font-heading text-4xl md:text-5xl font-semibold mb-1">{s.value}</p>
-                <p className="text-blue-200 text-sm font-medium">{s.label}</p>
+      {/* Stats — Premium dark treatment */}
+      <section data-testid="stats-section" className="py-20 bg-[#080E1C] relative overflow-hidden">
+        {/* Ghost number decoration */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none select-none overflow-hidden hidden lg:block">
+          <span className="font-heading font-bold text-[16rem] leading-none text-white/[0.025]">15</span>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
+            {stats.map((s, i) => (
+              <div key={s.label} className={`text-center px-4 ${i < stats.length - 1 ? "lg:border-r lg:border-white/10" : ""}`}>
+                <p className="font-heading text-5xl md:text-6xl font-medium text-white mb-2">{s.value}</p>
+                <div className="w-6 h-0.5 bg-blue-500 mx-auto mb-3 rounded-full" />
+                <p className="text-slate-400 text-xs uppercase tracking-[0.15em] font-semibold">{s.label}</p>
               </div>
             ))}
           </div>
@@ -215,20 +216,24 @@ export default function HomePage() {
       </section>
 
       {/* Intro */}
-      <section data-testid="intro-section" className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">About Bright Smile</p>
-          <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-5 leading-tight">
-            Dental Care Built Around <em>You</em>
+      <section data-testid="intro-section" className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="h-px w-8 bg-blue-600/40" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">About Bright Smile</span>
+            <div className="h-px w-8 bg-blue-600/40" />
+          </div>
+          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 mb-6 leading-[1.05] tracking-tight">
+            Dental Care Built<br /><em className="text-gradient">Around You</em>
           </h2>
-          <p className="text-slate-600 text-base leading-relaxed mb-3 max-w-2xl mx-auto">
-            Founded in 2008 by Dr. Emily Carter, Bright Smile Dental Care has grown into one of London's most respected practices — built on transparency, clinical excellence, and genuine care.
+          <p className="text-slate-500 text-base md:text-lg leading-relaxed mb-3 max-w-2xl mx-auto">
+            Founded in 2008 by Dr. Emily Carter, Bright Smile has grown into one of London's most respected practices — built on transparency, clinical excellence, and genuine care.
           </p>
-          <p className="text-slate-500 text-base leading-relaxed mb-7 max-w-2xl mx-auto">
-            Whether it's a routine check-up, a smile makeover, or urgent care — our experienced team is here for you.
+          <p className="text-slate-400 text-base leading-relaxed mb-8 max-w-xl mx-auto">
+            Whether it's a routine check-up, a smile makeover, or urgent care — we're here for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/about" data-testid="intro-about-btn" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
+            <Link to="/about" data-testid="intro-about-btn" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold border-b-2 border-blue-200 hover:border-blue-600 transition-colors pb-0.5">
               Learn About Our Practice <ChevronRight size={18} />
             </Link>
             <button data-testid="intro-book-btn" onClick={() => setBookingOpen(true)} className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3 rounded-full transition-all">
@@ -284,11 +289,15 @@ export default function HomePage() {
       </section>
 
       {/* Services Overview */}
-      <section data-testid="services-section" className="py-24 bg-slate-50">
+      <section data-testid="services-section" className="py-24 bg-[#F8F9FC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">What We Offer</p>
-            <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <div className="h-px w-8 bg-blue-600/40" />
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">What We Offer</span>
+              <div className="h-px w-8 bg-blue-600/40" />
+            </div>
+            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 mb-4 tracking-tight">
               Comprehensive Dental Services
             </h2>
             <p className="text-slate-500 text-base max-w-xl mx-auto">
@@ -337,16 +346,19 @@ export default function HomePage() {
       </section>
 
       {/* Why Choose Us */}
-      <section data-testid="why-us-section" className="py-24 bg-slate-50">
+      <section data-testid="why-us-section" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left — Text */}
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">Why Choose Us</p>
-              <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-5 leading-tight">
-                The Bright Smile<br /><em>Difference</em>
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Left — sticky text */}
+            <div className="lg:sticky lg:top-28">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-px w-8 bg-blue-600/40 flex-shrink-0" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">Why Choose Us</span>
+              </div>
+              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 mb-5 leading-[1.05] tracking-tight">
+                The Bright Smile<br /><em className="text-gradient">Difference</em>
               </h2>
-              <p className="text-slate-500 text-base mb-8 leading-relaxed max-w-md">
+              <p className="text-slate-500 text-base mb-8 leading-relaxed max-w-sm">
                 We take great pride in the standard of care we provide — from the moment you walk in to the follow-up call afterwards.
               </p>
               <button
@@ -357,15 +369,15 @@ export default function HomePage() {
                 Experience It Yourself
               </button>
             </div>
-            {/* Right — Grid */}
+            {/* Right — feature grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {whyUs.map((item, idx) => (
                 <div
                   key={item.title}
                   data-testid={`why-us-card-${idx}`}
-                  className="bg-white rounded-2xl p-5 border border-slate-200 card-hover group"
+                  className="bg-[#F8F9FC] rounded-2xl p-5 border border-slate-100 card-hover group"
                 >
-                  <div className="w-10 h-10 bg-blue-50 group-hover:bg-blue-100 rounded-xl flex items-center justify-center mb-4 transition-colors">
+                  <div className="w-10 h-10 bg-white group-hover:bg-blue-50 border border-slate-200 rounded-xl flex items-center justify-center mb-4 transition-colors shadow-sm">
                     <item.icon size={18} className="text-blue-600" />
                   </div>
                   <h3 className="font-heading text-lg font-semibold text-slate-900 mb-1">{item.title}</h3>
@@ -377,37 +389,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section data-testid="testimonials-section" className="py-24 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_rgba(219,234,254,0.4),_transparent_60%)]" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      {/* Testimonials — Featured + 3 below */}
+      <section data-testid="testimonials-section" className="py-24 bg-[#F8F9FC]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">Patient Stories</p>
-            <h2 className="font-heading text-4xl md:text-5xl font-medium text-slate-900 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <div className="h-px w-8 bg-blue-600/40" />
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">Patient Stories</span>
+              <div className="h-px w-8 bg-blue-600/40" />
+            </div>
+            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 tracking-tight">
               What Our Patients Say
             </h2>
-            <p className="text-slate-500 text-base max-w-lg mx-auto">Real stories from real patients who trust us with their smiles.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonials.map((t, idx) => {
-              const avatarColors = ["bg-blue-600", "bg-violet-600", "bg-emerald-600", "bg-amber-600"];
+
+          {/* Featured testimonial */}
+          <div
+            data-testid="testimonial-card-0"
+            className="bg-slate-900 rounded-3xl p-8 md:p-12 mb-6 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative grid md:grid-cols-[auto_1fr] gap-8 items-start">
+              <Quote size={56} className="text-blue-600/25 flex-shrink-0 hidden md:block" />
+              <div>
+                <div className="flex gap-1 mb-5">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
+                </div>
+                <p className="font-heading text-2xl md:text-3xl lg:text-[2rem] text-white leading-[1.35] italic mb-8 font-light max-w-3xl">
+                  "{testimonials[0].text}"
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-sm font-bold">
+                      {testimonials[0].name.split(" ").map(n => n[0]).join("")}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold">{testimonials[0].name}</p>
+                    <p className="text-slate-400 text-sm">{testimonials[0].role}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 smaller testimonials */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {testimonials.slice(1).map((t, idx) => {
+              const colors = ["bg-violet-600", "bg-emerald-600", "bg-amber-600"];
               return (
                 <div
                   key={t.name}
-                  data-testid={`testimonial-card-${idx}`}
-                  className="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.05)] card-hover flex flex-col"
+                  data-testid={`testimonial-card-${idx + 1}`}
+                  className="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_2px_16px_rgba(0,0,0,0.05)] flex flex-col"
                 >
                   <div className="flex gap-1 mb-4">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} size={14} className="text-amber-400 fill-amber-400" />
-                    ))}
+                    {[...Array(t.rating)].map((_, i) => <Star key={i} size={12} className="text-amber-400 fill-amber-400" />)}
                   </div>
-                  <Quote size={20} className="text-blue-100 mb-3" />
-                  <p className="text-slate-600 text-sm leading-relaxed mb-5 flex-1">"{t.text}"</p>
+                  <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-5">"{t.text}"</p>
                   <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                    <div className={`w-9 h-9 ${avatarColors[idx]} rounded-full flex items-center justify-center flex-shrink-0`}>
+                    <div className={`w-9 h-9 ${colors[idx]} rounded-full flex items-center justify-center flex-shrink-0`}>
                       <span className="text-white text-xs font-bold">{t.name.split(" ").map(n => n[0]).join("")}</span>
                     </div>
                     <div>
@@ -419,48 +460,58 @@ export default function HomePage() {
               );
             })}
           </div>
-          {/* Google review badge */}
+
+          {/* Review aggregate */}
           <div className="flex justify-center mt-10">
-            <div className="inline-flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-full px-6 py-3 text-sm text-slate-600">
+            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-full px-6 py-3 text-sm shadow-sm">
               <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => <Star key={i} size={14} className="text-amber-400 fill-amber-400" />)}
+                {[...Array(5)].map((_, i) => <Star key={i} size={13} className="text-amber-400 fill-amber-400" />)}
               </div>
-              <span className="font-semibold text-slate-800">4.9 / 5</span>
-              <span className="text-slate-400">·</span>
-              <span>500+ verified patient reviews</span>
+              <span className="font-bold text-slate-900">4.9 / 5</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-500">500+ verified reviews</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Banner */}
-      <section data-testid="cta-section" className="py-20 bg-slate-900 relative overflow-hidden">
+      <section data-testid="cta-section" className="py-24 bg-[#080E1C] relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-700/10 rounded-full blur-[80px]" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-600/8 rounded-full blur-[80px]" />
+          <div
+            className="absolute inset-0 opacity-[0.015]"
+            style={{ backgroundImage: "radial-gradient(#fff 1px, transparent 1px)", backgroundSize: "32px 32px" }}
+          />
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-4">Take the First Step</p>
-          <h2 className="font-heading text-4xl md:text-5xl font-medium text-white mb-5">
-            Ready for a Healthier Smile?
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-8 bg-blue-500/40" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 whitespace-nowrap">Take the First Step</span>
+            <div className="h-px w-8 bg-blue-500/40" />
+          </div>
+          <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl font-medium text-white mb-5 tracking-tight leading-[1.0]">
+            Ready for a<br />
+            <em className="text-gradient">Healthier Smile?</em>
           </h2>
-          <p className="text-slate-300 text-base leading-relaxed mb-8 max-w-xl mx-auto">
+          <p className="text-slate-400 text-base leading-relaxed mb-10 max-w-xl mx-auto">
             Book a consultation today and let us create a personalised treatment plan just for you. New patients are always welcome.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               data-testid="cta-book-btn"
               onClick={() => setBookingOpen(true)}
-              className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-9 py-4 rounded-full transition-all"
+              className="btn-primary bg-blue-600 hover:bg-blue-500 text-white font-semibold px-10 py-4 rounded-full transition-all"
             >
               Book an Appointment
             </button>
             <a
               href="tel:+442071234567"
               data-testid="cta-phone-link"
-              className="flex items-center justify-center gap-2 text-white border-2 border-slate-700 hover:border-slate-500 font-semibold px-8 py-4 rounded-full transition-all"
+              className="flex items-center justify-center gap-2 text-slate-300 hover:text-white border border-white/15 hover:border-white/30 font-semibold px-8 py-4 rounded-full transition-all"
             >
-              <Phone size={18} />
+              <Phone size={17} />
               Call Us Now
             </a>
           </div>

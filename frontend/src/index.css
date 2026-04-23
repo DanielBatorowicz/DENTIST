@@ -109,10 +109,35 @@ html {
     transform: translateY(-1px);
 }
 
-/* Divider line */
-.section-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #DBEAFE, transparent);
+/* =============================================
+   PREMIUM UTILITIES — Gradient text, section labels
+   ============================================= */
+
+/* Gradient headline text */
+.text-gradient {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Refined scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+
+/* Better text rendering globally */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Premium section divider */
+.divider-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #DBEAFE 40%, #DBEAFE 60%, transparent 100%);
 }
 
 @layer base {
