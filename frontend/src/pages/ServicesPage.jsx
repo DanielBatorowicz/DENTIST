@@ -144,17 +144,17 @@ export default function ServicesPage() {
                 key={service.id}
                 id={service.id}
                 data-testid={`service-detail-${service.id}`}
-                className="bg-slate-50 rounded-2xl p-8 border border-slate-100 card-hover"
+                className="bg-slate-50 rounded-2xl p-8 border border-slate-100 card-hover flex flex-col"
               >
-                <div className="flex items-start gap-5">
+                <div className="flex items-start gap-5 flex-1">
                   <div className={`w-13 h-13 rounded-xl flex items-center justify-center flex-shrink-0 p-3 ${colorMap[service.color]}`}>
                     <service.icon size={24} />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 flex flex-col">
                     <h2 className="font-heading text-2xl font-semibold text-slate-900 mb-2">{service.title}</h2>
                     <p className="text-slate-600 text-sm leading-relaxed mb-5">{service.desc}</p>
 
-                    <div className="mb-4">
+                    <div className="mb-4 flex-1">
                       <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Key Benefits</p>
                       <ul className="space-y-2">
                         {service.benefits.map((b) => (
@@ -166,12 +166,12 @@ export default function ServicesPage() {
                       </ul>
                     </div>
 
-                    <div className="flex items-center justify-between flex-wrap gap-3 pt-4 border-t border-slate-200">
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-200 mt-auto">
                       <span className="text-xs text-slate-500 italic">{service.for}</span>
                       <button
                         data-testid={`book-service-${service.id}`}
                         onClick={() => setBookingOpen(true)}
-                        className="btn-primary bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all"
+                        className="btn-primary bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all flex-shrink-0 ml-4"
                       >
                         Book Consultation
                       </button>
