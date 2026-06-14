@@ -1,166 +1,181 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  Shield, Sparkles, CircleDot, Star, AlignCenter,
-  Heart, Award, Cpu, Home, ClipboardList,
-  Calendar, ChevronRight, Phone, Quote, CheckCircle
+  Truck, Recycle, Shield, Clock, Award, Leaf,
+  ChevronRight, Phone, CheckCircle, Star, ArrowRight,
+  Hammer, Home, TreePine, Package, Layers, Box
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import BookingModal from "@/components/BookingModal";
 import useSEO from "@/hooks/useSEO";
 
-const featuredServices = [
+const services = [
   {
-    icon: Shield,
-    title: "Check-ups & Cleanings",
-    desc: "Preventive care to keep your smile healthy and bright with thorough professional cleaning.",
-    image: "https://images.pexels.com/photos/6627527/pexels-photo-6627527.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
-    imageAlt: "Professional dental examination with dental mirror and tools",
+    icon: Hammer,
+    title: "Gruz i odpady budowlane",
+    desc: "Kompleksowy wywóz gruzu, odpadów remontowych i budowlanych. Obsługujemy zarówno duże inwestycje, jak i remonty domowe.",
+    color: "bg-amber-50",
+    iconColor: "text-amber-600",
+    border: "border-amber-100",
   },
   {
-    icon: Sparkles,
-    title: "Teeth Whitening",
-    desc: "Achieve a radiant, confident smile with our safe and clinically proven whitening treatments.",
-    image: "https://images.pexels.com/photos/5622271/pexels-photo-5622271.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
-    imageAlt: "Dentist performing professional teeth whitening treatment on patient",
+    icon: Home,
+    title: "Odpady komunalne",
+    desc: "Regularny lub jednorazowy wywóz odpadów komunalnych dla firm, wspólnot mieszkaniowych i klientów indywidualnych.",
+    color: "bg-green-50",
+    iconColor: "text-green-600",
+    border: "border-green-100",
   },
   {
-    icon: CircleDot,
-    title: "Dental Implants",
-    desc: "Permanent, natural-looking tooth replacements that restore full function and aesthetics.",
-    image: "https://images.unsplash.com/photo-1771442873035-474765b40ac6?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=700&h=400&fit=crop",
-    imageAlt: "Gloved dentist holding a titanium dental implant and ceramic crown",
+    icon: TreePine,
+    title: "Drewno i odpady zielone",
+    desc: "Utylizacja drewna, gałęzi, odpadów drzewnych i zielonych z ogrodów, budów i magazynów.",
+    color: "bg-emerald-50",
+    iconColor: "text-emerald-600",
+    border: "border-emerald-100",
   },
   {
-    icon: Star,
-    title: "Veneers",
-    desc: "Porcelain veneers crafted to transform and perfect the appearance of your smile.",
-    image: "https://images.pexels.com/photos/6627564/pexels-photo-6627564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
-    imageAlt: "Dentist carefully applying a porcelain veneer to a patient's tooth",
+    icon: Layers,
+    title: "Papa i materiały pokryciowe",
+    desc: "Specjalistyczny wywóz papy, dachówek, materiałów pokryciowych zgodnie z przepisami środowiskowymi.",
+    color: "bg-slate-50",
+    iconColor: "text-slate-600",
+    border: "border-slate-100",
   },
   {
-    icon: AlignCenter,
-    title: "Orthodontics",
-    desc: "Discreet teeth straightening with Invisalign and modern braces for all ages.",
-    image: "https://images.unsplash.com/photo-1651180352574-669683817463?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=700&h=400&fit=crop",
-    imageAlt: "Clear Invisalign aligner in its case for discreet teeth straightening",
+    icon: Package,
+    title: "Materiały termoizolacyjne",
+    desc: "Bezpieczna utylizacja wełny mineralnej, styropianu i innych materiałów izolacyjnych.",
+    color: "bg-blue-50",
+    iconColor: "text-blue-600",
+    border: "border-blue-100",
   },
   {
-    icon: Heart,
-    title: "Pediatric Dentistry",
-    desc: "Gentle, friendly dental care tailored to make children feel safe and comfortable.",
-    image: "https://images.pexels.com/photos/8260438/pexels-photo-8260438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=400&w=700",
-    imageAlt: "Happy child smiling in dental chair with friendly dental team",
+    icon: Box,
+    title: "Kontenery Big-Bag",
+    desc: "Dostarczamy worki Big-Bag na odpady budowlane i komunalne. Odbiór po zapełnieniu na Twoje zlecenie.",
+    color: "bg-violet-50",
+    iconColor: "text-violet-600",
+    border: "border-violet-100",
   },
 ];
 
 const whyUs = [
-  { icon: Award, title: "15+ Years of Excellence", desc: "Over a decade of trusted expertise delivering outstanding dental outcomes." },
-  { icon: Cpu, title: "Modern Technology", desc: "State-of-the-art digital X-rays, intraoral cameras, and laser dentistry." },
-  { icon: Heart, title: "Gentle, Caring Approach", desc: "We prioritise your comfort at every step — especially for nervous patients." },
-  { icon: Home, title: "Premium Clinic Environment", desc: "A calm, spotlessly clean environment designed to put you at ease." },
-  { icon: ClipboardList, title: "Transparent Treatment Plans", desc: "Clear, upfront pricing with no hidden costs — ever." },
-  { icon: Calendar, title: "Flexible Scheduling", desc: "Early morning, evening, and Saturday appointments to fit your lifestyle." },
+  { icon: Award, title: "30+ lat doświadczenia", desc: "Od ponad 30 lat obsługujemy Kraków i okolice — rzetelnie i profesjonalnie." },
+  { icon: Truck, title: "Nowoczesna flota EURO 6", desc: "Pojazdy spełniające najwyższe normy emisji — ekologicznie i niezawodnie." },
+  { icon: Clock, title: "Szybka realizacja", desc: "Sprawny odbiór odpadów w uzgodnionym terminie — bez zbędnego czekania." },
+  { icon: Leaf, title: "Zgodność z przepisami", desc: "Posiadamy wszelkie zezwolenia i dbamy o właściwą utylizację każdego rodzaju odpadu." },
+  { icon: Shield, title: "Pełne ubezpieczenie", desc: "Ubezpieczone pojazdy i ekipa. Twój majątek jest bezpieczny podczas każdego zlecenia." },
+  { icon: Recycle, title: "Segregacja i recykling", desc: "Odpady są segregowane i przekazywane do recyklingu tam, gdzie to możliwe." },
+];
+
+const stats = [
+  { value: "30+", label: "Lat na rynku" },
+  { value: "5 000+", label: "Zrealizowanych zleceń" },
+  { value: "100%", label: "Zgodność z prawem" },
+  { value: "EURO 6", label: "Standard pojazdów" },
 ];
 
 const testimonials = [
   {
-    name: "Sarah Mitchell",
-    role: "Patient since 2019",
-    text: "Dr. Carter and her team made me feel completely at ease from my very first visit. I used to dread the dentist, but now I actually look forward to my check-ups. The clinic is beautiful and the care is exceptional.",
+    name: "Marcin Kowalski",
+    role: "Deweloper, Kraków",
+    text: "BSS to sprawdzony partner przy każdej inwestycji budowlanej. Wywóz gruzu zawsze na czas, bez problemów. Polecam każdemu, kto szuka solidnej firmy.",
     rating: 5,
   },
   {
-    name: "James Thompson",
-    role: "Cosmetic patient",
-    text: "I had veneers fitted and the results are incredible. My smile has genuinely changed my confidence. The process was explained clearly at every stage and the final result exceeded my expectations.",
+    name: "Anna Wiśniewska",
+    role: "Właścicielka domu, Podgórze",
+    text: "Skorzystałam z usług BSS przy generalnym remoncie. Kontenery podstawione szybko, odbiór sprawny. Cena adekwatna do jakości — w pełni polecam!",
     rating: 5,
   },
   {
-    name: "Emma Davies",
-    role: "Invisalign patient",
-    text: "Six months of Invisalign and I couldn't be happier. The team was supportive throughout, checking in regularly and making adjustments as needed. Totally worth it — my teeth look amazing.",
+    name: "Tomasz Nowak",
+    role: "Zarządca nieruchomości",
+    text: "Obsługują kilka moich wspólnot mieszkaniowych. Regularność, punktualność i profesjonalizm to cechy, które wyróżniają BSS spośród innych firm.",
     rating: 5,
   },
   {
-    name: "Michael Chen",
-    role: "Implant patient",
-    text: "After losing a tooth in an accident, I was referred to Bright Smile for an implant. The procedure was smoother than I expected, and the result is completely indistinguishable from my natural teeth.",
+    name: "Katarzyna Zając",
+    role: "Kierownik budowy",
+    text: "Wieloletnia współpraca z BSS to gwarancja spokojnego placu budowy. Odpady znikają sprawnie, dokumentacja zawsze w porządku. Solidna firma.",
     rating: 5,
   },
-];
-
-const stats = [
-  { value: "4,500+", label: "Happy Patients" },
-  { value: "15+", label: "Years of Experience" },
-  { value: "98%", label: "Patient Satisfaction" },
-  { value: "10+", label: "Specialist Services" },
 ];
 
 export default function HomePage() {
-  const [bookingOpen, setBookingOpen] = useState(false);
-
   useSEO({
-    title: "Bright Smile Dental Care | Trusted Dentist in London",
-    description: "Book an appointment at Bright Smile Dental Care on Harley Street, London. Expert general, cosmetic & emergency dentistry led by Dr. Emily Carter. New patients welcome.",
-    keywords: "dentist in London, dental clinic London, cosmetic dentist London, family dentist London, emergency dentist London, teeth whitening London, dental implants London, Harley Street dentist",
+    title: "BSS Kraków | Wywóz i Utylizacja Odpadów — 30+ Lat Doświadczenia",
+    description: "Profesjonalny wywóz odpadów budowlanych, komunalnych i przemysłowych w Krakowie i okolicach. Nowoczesna flota EURO 6, szybka realizacja. Zadzwoń: +48 12 268 14 66",
+    keywords: "wywóz odpadów Kraków, wywóz gruzu Kraków, kontenery na odpady, utylizacja odpadów budowlanych, Big-Bag Kraków, BSS Kraków",
   });
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Hero */}
-      <section data-testid="hero-section" className="pt-20 min-h-screen flex items-center bg-white relative overflow-hidden">
-        {/* Background: clean right panel + subtle dot grid */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[52%] h-full bg-gradient-to-bl from-slate-50 via-blue-50/40 to-transparent" />
-          <div
-            className="absolute inset-0 opacity-[0.018]"
-            style={{ backgroundImage: "radial-gradient(#2563EB 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+      {/* ── HERO ── */}
+      <section
+        data-testid="hero-section"
+        className="pt-20 min-h-screen flex items-center relative overflow-hidden bg-[#071A0E]"
+      >
+        {/* Background image overlay */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80"
+            alt="Pojazd do wywozu odpadów"
+            className="w-full h-full object-cover opacity-20"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#071A0E]/95 via-[#071A0E]/80 to-[#071A0E]/60" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative w-full">
-          {/* Left */}
-          <div className="animate-fade-in-up">
+        {/* Grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "linear-gradient(#22c55e 1px, transparent 1px), linear-gradient(90deg, #22c55e 1px, transparent 1px)", backgroundSize: "60px 60px" }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-28 relative w-full">
+          <div className="max-w-3xl animate-fade-in-up">
             {/* Eyebrow */}
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse flex-shrink-0" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">Trusted Dental Care · London, W1</span>
+            <div className="inline-flex items-center gap-2.5 bg-green-600/20 border border-green-500/30 rounded-full px-5 py-2 mb-8">
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-green-400 text-xs font-bold uppercase tracking-[0.2em]">Kraków i okolice · Od 1995 roku</span>
             </div>
 
-            <h1 className="font-heading text-6xl md:text-7xl lg:text-[5.5rem] leading-[0.95] font-medium text-slate-900 mb-7 tracking-tight">
-              Your Smile,<br />
-              <span className="italic text-gradient">Our Passion.</span>
+            <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-bold text-white leading-[0.95] mb-7 tracking-tight">
+              Wywóz odpadów<br />
+              <span className="text-gradient-lime">szybko i legalnie.</span>
             </h1>
 
-            <p className="text-slate-500 text-base md:text-lg leading-relaxed mb-9 max-w-md">
-              We combine clinical excellence with genuine compassion — delivering dental care that's comfortable, transparent, and tailored entirely to you.
+            <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-10 max-w-xl">
+              Profesjonalna firma z 30-letnim doświadczeniem. Obsługujemy firmy budowlane, deweloperów, wspólnoty mieszkaniowe i klientów indywidualnych w Krakowie i okolicach.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-10">
-              <button
-                data-testid="hero-book-btn"
-                onClick={() => setBookingOpen(true)}
-                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all flex items-center gap-2.5"
+            <div className="flex flex-wrap gap-4 mb-12">
+              <a
+                href="tel:+48122681466"
+                data-testid="hero-phone-btn"
+                className="btn-primary bg-green-600 hover:bg-green-500 text-white font-bold px-8 py-4 rounded-full transition-all flex items-center gap-2.5 text-base"
               >
-                <Calendar size={17} />
-                Book an Appointment
-              </button>
+                <Phone size={18} />
+                Zadzwoń teraz
+              </a>
               <Link
                 to="/services"
                 data-testid="hero-services-btn"
-                className="flex items-center gap-2 text-slate-700 hover:text-blue-600 font-semibold px-6 py-4 rounded-full border-2 border-slate-200 hover:border-blue-300 transition-all"
+                className="flex items-center gap-2 text-white hover:text-green-300 font-semibold px-7 py-4 rounded-full border-2 border-white/20 hover:border-green-400/50 transition-all"
               >
-                Explore Services <ChevronRight size={18} />
+                Nasze usługi <ChevronRight size={18} />
               </Link>
             </div>
 
             {/* Trust badges */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-500 pt-6 border-t border-slate-100">
-              {["NHS Registered", "CQC Outstanding", "BDA Member"].map((badge) => (
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-slate-400 pt-8 border-t border-white/10">
+              {[
+                "Pojazdy EURO 6",
+                "Zezwolenia środowiskowe",
+                "Działamy od 1995 r.",
+              ].map((badge) => (
                 <div key={badge} className="flex items-center gap-2">
                   <CheckCircle size={15} className="text-green-500 flex-shrink-0" />
                   <span className="font-medium">{badge}</span>
@@ -168,219 +183,184 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
 
-          {/* Right — Image */}
-          <div className="relative animate-fade-in-up animate-delay-200">
-            <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[4/5]">
-              <img
-                src="https://images.pexels.com/photos/14052564/pexels-photo-14052564.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1080&w=1920"
-                alt="Dr. Carter with patient at Bright Smile Dental Care London"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent" />
-            </div>
-            {/* Rating card */}
-            <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-xl p-5 border border-slate-100 min-w-[195px]">
-              <div className="flex gap-1 mb-2">
-                {[...Array(5)].map((_, i) => <Star key={i} size={13} className="text-amber-400 fill-amber-400" />)}
+        {/* Floating card */}
+        <div className="absolute bottom-8 right-8 lg:right-16 hidden lg:block">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 border border-green-100 w-64">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                <Truck size={20} className="text-green-700" />
               </div>
-              <p className="text-slate-900 font-bold text-base">4.9 / 5 Rating</p>
-              <p className="text-slate-400 text-xs mt-0.5">Based on 500+ Google reviews</p>
+              <div>
+                <p className="font-heading font-bold text-slate-900 text-sm">Szybka realizacja</p>
+                <p className="text-slate-400 text-xs">W ciągu 24–48 godzin</p>
+              </div>
             </div>
-            {/* Years badge */}
-            <div className="absolute -top-5 -right-5 bg-blue-600 text-white rounded-2xl shadow-xl px-5 py-4 text-center">
-              <p className="font-heading font-bold text-2xl leading-none">15+</p>
-              <p className="text-blue-200 text-xs mt-1">Years of<br />Expert Care</p>
+            <div className="space-y-2">
+              {["Gruz budowlany", "Odpady komunalne", "Big-Bag kontenery"].map((s) => (
+                <div key={s} className="flex items-center gap-2 text-xs text-slate-600">
+                  <CheckCircle size={12} className="text-green-500" />
+                  {s}
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats — Premium dark treatment */}
-      <section data-testid="stats-section" className="py-20 bg-[#080E1C] relative overflow-hidden">
-        {/* Ghost number decoration */}
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none select-none overflow-hidden hidden lg:block">
-          <span className="font-heading font-bold text-[16rem] leading-none text-white/[0.025]">15</span>
+      {/* ── STATS ── */}
+      <section data-testid="stats-section" className="py-16 bg-green-600 relative overflow-hidden">
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none overflow-hidden hidden xl:block">
+          <span className="font-heading font-bold text-[14rem] leading-none text-white/[0.07] tracking-tight">30+</span>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
             {stats.map((s, i) => (
-              <div key={s.label} className={`text-center px-4 ${i < stats.length - 1 ? "lg:border-r lg:border-white/10" : ""}`}>
-                <p className="font-heading text-5xl md:text-6xl font-medium text-white mb-2">{s.value}</p>
-                <div className="w-6 h-0.5 bg-blue-500 mx-auto mb-3 rounded-full" />
-                <p className="text-slate-400 text-xs uppercase tracking-[0.15em] font-semibold">{s.label}</p>
+              <div key={s.label} className={`text-center px-4 ${i < stats.length - 1 ? "lg:border-r lg:border-white/20" : ""}`}>
+                <p className="font-heading text-4xl md:text-5xl font-bold text-white mb-2">{s.value}</p>
+                <div className="w-6 h-0.5 bg-white/40 mx-auto mb-3 rounded-full" />
+                <p className="text-green-100 text-xs uppercase tracking-[0.15em] font-semibold">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Intro */}
-      <section data-testid="intro-section" className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center justify-center gap-3 mb-5">
-            <div className="h-px w-8 bg-blue-600/40" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">About Bright Smile</span>
-            <div className="h-px w-8 bg-blue-600/40" />
-          </div>
-          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 mb-6 leading-[1.05] tracking-tight">
-            Dental Care Built<br /><em className="text-gradient">Around You</em>
-          </h2>
-          <p className="text-slate-500 text-base md:text-lg leading-relaxed mb-3 max-w-2xl mx-auto">
-            Founded in 2008 by Dr. Emily Carter, Bright Smile has grown into one of London's most respected practices — built on transparency, clinical excellence, and genuine care.
-          </p>
-          <p className="text-slate-400 text-base leading-relaxed mb-8 max-w-xl mx-auto">
-            Whether it's a routine check-up, a smile makeover, or urgent care — we're here for you.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/about" data-testid="intro-about-btn" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold border-b-2 border-blue-200 hover:border-blue-600 transition-colors pb-0.5">
-              Learn About Our Practice <ChevronRight size={18} />
-            </Link>
-            <button data-testid="intro-book-btn" onClick={() => setBookingOpen(true)} className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-3 rounded-full transition-all">
-              Book a Consultation
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Meet Dr. Carter — dark card */}
-      <section data-testid="meet-doctor-section" className="py-0 bg-white">
+      {/* ── INTRO ── */}
+      <section data-testid="intro-section" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl overflow-hidden">
-            <div className="grid md:grid-cols-2 gap-0 items-center">
-              {/* Image */}
-              <div className="relative h-72 md:h-full min-h-[360px] overflow-hidden">
-                <img
-                  src="https://images.pexels.com/photos/6809667/pexels-photo-6809667.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=900&w=600"
-                  alt="Dr. Emily Carter, Principal Dentist at Bright Smile Dental Care"
-                  className="w-full h-full object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-slate-900/60 hidden md:block" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent md:hidden" />
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-1.5 mb-6">
+                <span className="text-green-700 text-xs font-bold uppercase tracking-widest">O firmie BSS</span>
               </div>
-              {/* Text */}
-              <div className="px-8 py-10 md:px-12 md:py-14">
-                <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3">Your Dentist</p>
-                <h2 className="font-heading text-3xl md:text-4xl font-medium text-white mb-2 leading-tight">
-                  Dr. Emily Carter
-                </h2>
-                <p className="font-heading text-lg text-blue-400 italic mb-5">BDS, MFDS RCS — 15+ Years Experience</p>
-                <p className="text-slate-300 text-sm leading-relaxed mb-6">
-                  Qualified at King's College London and one of the capital's most respected dentists. Dr. Carter specialises in making every patient — including nervous patients — feel safe, informed, and cared for.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-7">
-                  {["Invisalign Provider", "Cosmetic Dentistry", "BDA Member"].map((tag) => (
-                    <span key={tag} className="bg-white/10 border border-white/20 text-slate-300 text-xs font-medium px-3 py-1.5 rounded-full">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-[1.0] tracking-tight">
+                Zaufany partner<br />
+                <span className="text-gradient">w zarządzaniu odpadami</span>
+              </h2>
+              <p className="text-slate-500 text-base leading-relaxed mb-5">
+                Firma BSS działa na rynku krakowskim od 1995 roku. Przez ponad 30 lat zbudowaliśmy reputację rzetelnego, profesjonalnego partnera w dziedzinie wywozu i utylizacji odpadów dla firm oraz klientów indywidualnych.
+              </p>
+              <p className="text-slate-400 text-base leading-relaxed mb-8">
+                Dysponujemy nowoczesną flotą pojazdów spełniających normę EURO 6, posiadamy wszelkie wymagane zezwolenia środowiskowe i realizujemy zlecenia szybko, bezpiecznie i zgodnie z obowiązującymi przepisami.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/about"
-                  data-testid="meet-doctor-link"
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-7 py-3.5 rounded-full transition-all"
+                  data-testid="intro-about-btn"
+                  className="inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-7 py-3.5 rounded-full btn-primary transition-all"
                 >
-                  Meet Dr. Carter <ChevronRight size={16} />
+                  Poznaj nas <ArrowRight size={17} />
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center gap-2 text-slate-700 hover:text-green-700 font-semibold border-2 border-slate-200 hover:border-green-300 px-7 py-3.5 rounded-full transition-all"
+                >
+                  Skontaktuj się
                 </Link>
               </div>
             </div>
+            <div className="relative">
+              <div className="rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
+                <img
+                  src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80"
+                  alt="Profesjonalny wywóz odpadów budowlanych"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-green-900/30 to-transparent" />
+              </div>
+              {/* Badge */}
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-5 border border-green-100">
+                <p className="font-heading font-bold text-3xl text-green-700">30+</p>
+                <p className="text-slate-500 text-xs mt-0.5">lat<br />doświadczenia</p>
+              </div>
+              <div className="absolute -top-5 -right-5 bg-[#071A0E] text-white rounded-2xl shadow-xl px-5 py-4 text-center">
+                <p className="font-heading font-bold text-lg leading-none text-green-400">EURO 6</p>
+                <p className="text-slate-400 text-xs mt-1">Norma<br />ekologiczna</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services Overview */}
-      <section data-testid="services-section" className="py-24 bg-[#F8F9FC]">
+      {/* ── SERVICES ── */}
+      <section data-testid="services-section" className="py-24 bg-[#F5FBF5]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <div className="flex items-center justify-center gap-3 mb-5">
-              <div className="h-px w-8 bg-blue-600/40" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">What We Offer</span>
-              <div className="h-px w-8 bg-blue-600/40" />
+            <div className="inline-flex items-center gap-2 bg-green-100 border border-green-200 rounded-full px-4 py-1.5 mb-5">
+              <span className="text-green-700 text-xs font-bold uppercase tracking-widest">Co wywożąmy</span>
             </div>
-            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 mb-4 tracking-tight">
-              Comprehensive Dental Services
+            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-4 tracking-tight leading-tight">
+              Kompleksowe usługi<br />wywozu odpadów
             </h2>
             <p className="text-slate-500 text-base max-w-xl mx-auto">
-              From routine check-ups to advanced cosmetic treatments — all under one roof, with expert care.
+              Gruz, meble, papa, izolacje, odpady komunalne i wiele więcej — odbieramy je sprawnie i bezpiecznie.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredServices.map((service) => (
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {services.map((service, i) => (
               <div
                 key={service.title}
-                data-testid={`service-card-${service.title.toLowerCase().replace(/\s/g, "-")}`}
-                className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] card-hover group flex flex-col"
+                data-testid={`service-card-${i}`}
+                className={`${service.color} rounded-2xl p-7 border ${service.border} card-hover group`}
               >
-                {/* Image */}
-                <div className="h-44 overflow-hidden flex-shrink-0">
-                  <img
-                    src={service.image}
-                    alt={service.imageAlt}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                <div className={`w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-5 shadow-sm group-hover:shadow-md transition-shadow`}>
+                  <service.icon size={22} className={service.iconColor} />
                 </div>
-                {/* Content */}
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 bg-blue-50 group-hover:bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors">
-                      <service.icon size={17} className="text-blue-600" />
-                    </div>
-                    <h3 className="font-heading text-lg font-semibold text-slate-900">{service.title}</h3>
-                  </div>
-                  <p className="text-slate-500 text-sm leading-relaxed flex-1">{service.desc}</p>
-                </div>
+                <h3 className="font-heading text-xl font-bold text-slate-900 mb-3">{service.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">{service.desc}</p>
               </div>
             ))}
           </div>
+
           <div className="text-center mt-10">
             <Link
               to="/services"
               data-testid="view-all-services-btn"
-              className="inline-flex items-center gap-2 btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all"
+              className="inline-flex items-center gap-2 btn-primary bg-green-600 hover:bg-green-700 text-white font-semibold px-9 py-4 rounded-full transition-all"
             >
-              View All Services <ChevronRight size={18} />
+              Wszystkie usługi <ChevronRight size={18} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Us */}
+      {/* ── WHY US ── */}
       <section data-testid="why-us-section" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Left — sticky text */}
             <div className="lg:sticky lg:top-28">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="h-px w-8 bg-blue-600/40 flex-shrink-0" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">Why Choose Us</span>
+              <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-1.5 mb-6">
+                <span className="text-green-700 text-xs font-bold uppercase tracking-widest">Dlaczego BSS?</span>
               </div>
-              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 mb-5 leading-[1.05] tracking-tight">
-                The Bright Smile<br /><em className="text-gradient">Difference</em>
+              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-5 leading-[1.0] tracking-tight">
+                Solidność, która<br /><span className="text-gradient">mówi sama za siebie</span>
               </h2>
-              <p className="text-slate-500 text-base mb-8 leading-relaxed max-w-sm">
-                We take great pride in the standard of care we provide — from the moment you walk in to the follow-up call afterwards.
+              <p className="text-slate-500 text-base mb-8 leading-relaxed max-w-md">
+                Wybierając BSS, zyskujesz pewność, że odbiór odpadów przebiegnie sprawnie, legalnie i bez zbędnych formalności po Twojej stronie.
               </p>
-              <button
-                data-testid="why-us-book-btn"
-                onClick={() => setBookingOpen(true)}
-                className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all"
+              <a
+                href="tel:+48122681466"
+                className="btn-primary inline-flex items-center gap-2.5 bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-full transition-all"
               >
-                Experience It Yourself
-              </button>
+                <Phone size={17} />
+                Zadzwoń i zapytaj
+              </a>
             </div>
-            {/* Right — feature grid */}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {whyUs.map((item, idx) => (
                 <div
                   key={item.title}
                   data-testid={`why-us-card-${idx}`}
-                  className="bg-[#F8F9FC] rounded-2xl p-5 border border-slate-100 card-hover group"
+                  className="bg-[#F5FBF5] rounded-2xl p-5 border border-green-100 card-hover group"
                 >
-                  <div className="w-10 h-10 bg-white group-hover:bg-blue-50 border border-slate-200 rounded-xl flex items-center justify-center mb-4 transition-colors shadow-sm">
-                    <item.icon size={18} className="text-blue-600" />
+                  <div className="w-10 h-10 bg-white group-hover:bg-green-50 border border-green-200 rounded-xl flex items-center justify-center mb-4 transition-colors shadow-sm">
+                    <item.icon size={18} className="text-green-600" />
                   </div>
-                  <h3 className="font-heading text-lg font-semibold text-slate-900 mb-1">{item.title}</h3>
+                  <h3 className="font-heading text-base font-bold text-slate-900 mb-1">{item.title}</h3>
                   <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
                 </div>
               ))}
@@ -389,66 +369,95 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials — Featured + 3 below */}
-      <section data-testid="testimonials-section" className="py-24 bg-[#F8F9FC]">
+      {/* ── PROCESS ── */}
+      <section className="py-24 bg-[#071A0E] relative overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "radial-gradient(#22c55e 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 bg-green-900/50 border border-green-700/40 rounded-full px-4 py-1.5 mb-5">
+              <span className="text-green-400 text-xs font-bold uppercase tracking-widest">Jak działamy</span>
+            </div>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              Prosty proces w 3 krokach
+            </h2>
+            <p className="text-slate-400 text-base max-w-lg mx-auto">
+              Zamawiasz — my przyjeżdżamy i odbieramy. Bez biurokracji, bez stresu.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { num: "01", title: "Zadzwoń lub napisz", desc: "Skontaktuj się z nami telefonicznie lub mailowo, opisz rodzaj i ilość odpadów. Wyceniamy szybko i bez zobowiązań." },
+              { num: "02", title: "Ustalamy termin", desc: "Wspólnie ustalamy termin odbioru. Przyjeżdżamy punktualnie, bez zbędnego oczekiwania z Twojej strony." },
+              { num: "03", title: "Odbieramy i utylizujemy", desc: "Ładujemy odpady, wystawiamy dokumentację i przekazujemy je do właściwej utylizacji lub recyklingu." },
+            ].map((step) => (
+              <div key={step.num} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-colors">
+                <div className="font-heading text-5xl font-bold text-green-600/30 mb-4 leading-none">{step.num}</div>
+                <h3 className="font-heading text-xl font-bold text-white mb-3">{step.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section data-testid="testimonials-section" className="py-24 bg-[#F5FBF5]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <div className="flex items-center justify-center gap-3 mb-5">
-              <div className="h-px w-8 bg-blue-600/40" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 whitespace-nowrap">Patient Stories</span>
-              <div className="h-px w-8 bg-blue-600/40" />
+            <div className="inline-flex items-center gap-2 bg-green-100 border border-green-200 rounded-full px-4 py-1.5 mb-5">
+              <span className="text-green-700 text-xs font-bold uppercase tracking-widest">Opinie klientów</span>
             </div>
-            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 tracking-tight">
-              What Our Patients Say
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+              Co mówią o nas klienci
             </h2>
           </div>
 
           {/* Featured testimonial */}
           <div
             data-testid="testimonial-card-0"
-            className="bg-slate-900 rounded-3xl p-8 md:p-12 mb-6 relative overflow-hidden"
+            className="bg-[#071A0E] rounded-3xl p-8 md:p-12 mb-6 relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative grid md:grid-cols-[auto_1fr] gap-8 items-start">
-              <Quote size={56} className="text-blue-600/25 flex-shrink-0 hidden md:block" />
-              <div>
-                <div className="flex gap-1 mb-5">
-                  {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-green-600/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative">
+              <div className="flex gap-1 mb-5">
+                {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
+              </div>
+              <p className="font-heading text-2xl md:text-3xl text-white leading-[1.35] italic mb-8 font-normal max-w-3xl">
+                „{testimonials[0].text}"
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-700 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-sm font-bold">
+                    {testimonials[0].name.split(" ").map(n => n[0]).join("")}
+                  </span>
                 </div>
-                <p className="font-heading text-2xl md:text-3xl lg:text-[2rem] text-white leading-[1.35] italic mb-8 font-light max-w-3xl">
-                  "{testimonials[0].text}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-sm font-bold">
-                      {testimonials[0].name.split(" ").map(n => n[0]).join("")}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">{testimonials[0].name}</p>
-                    <p className="text-slate-400 text-sm">{testimonials[0].role}</p>
-                  </div>
+                <div>
+                  <p className="text-white font-semibold">{testimonials[0].name}</p>
+                  <p className="text-slate-400 text-sm">{testimonials[0].role}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 3 smaller testimonials */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {testimonials.slice(1).map((t, idx) => {
-              const colors = ["bg-violet-600", "bg-emerald-600", "bg-amber-600"];
+              const avatarColors = ["bg-green-700", "bg-emerald-700", "bg-teal-700"];
               return (
                 <div
                   key={t.name}
                   data-testid={`testimonial-card-${idx + 1}`}
-                  className="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_2px_16px_rgba(0,0,0,0.05)] flex flex-col"
+                  className="bg-white rounded-2xl p-6 border border-green-100 shadow-[0_2px_16px_rgba(22,163,74,0.06)] flex flex-col"
                 >
                   <div className="flex gap-1 mb-4">
                     {[...Array(t.rating)].map((_, i) => <Star key={i} size={12} className="text-amber-400 fill-amber-400" />)}
                   </div>
-                  <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-5">"{t.text}"</p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                    <div className={`w-9 h-9 ${colors[idx]} rounded-full flex items-center justify-center flex-shrink-0`}>
+                  <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-5">„{t.text}"</p>
+                  <div className="flex items-center gap-3 pt-4 border-t border-green-50">
+                    <div className={`w-9 h-9 ${avatarColors[idx]} rounded-full flex items-center justify-center flex-shrink-0`}>
                       <span className="text-white text-xs font-bold">{t.name.split(" ").map(n => n[0]).join("")}</span>
                     </div>
                     <div>
@@ -460,66 +469,46 @@ export default function HomePage() {
               );
             })}
           </div>
-
-          {/* Review aggregate */}
-          <div className="flex justify-center mt-10">
-            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-full px-6 py-3 text-sm shadow-sm">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => <Star key={i} size={13} className="text-amber-400 fill-amber-400" />)}
-              </div>
-              <span className="font-bold text-slate-900">4.9 / 5</span>
-              <span className="text-slate-300">|</span>
-              <span className="text-slate-500">500+ verified reviews</span>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <section data-testid="cta-section" className="py-24 bg-[#080E1C] relative overflow-hidden">
+      {/* ── CTA ── */}
+      <section data-testid="cta-section" className="py-24 bg-green-600 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-700/10 rounded-full blur-[80px]" />
-          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-600/8 rounded-full blur-[80px]" />
-          <div
-            className="absolute inset-0 opacity-[0.015]"
-            style={{ backgroundImage: "radial-gradient(#fff 1px, transparent 1px)", backgroundSize: "32px 32px" }}
-          />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-green-500/20 rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-green-700/30 rounded-full blur-[80px]" />
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="h-px w-8 bg-blue-500/40" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 whitespace-nowrap">Take the First Step</span>
-            <div className="h-px w-8 bg-blue-500/40" />
-          </div>
-          <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl font-medium text-white mb-5 tracking-tight leading-[1.0]">
-            Ready for a<br />
-            <em className="text-gradient">Healthier Smile?</em>
+          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 tracking-tight leading-[1.05]">
+            Potrzebujesz wywozu odpadów?
           </h2>
-          <p className="text-slate-400 text-base leading-relaxed mb-10 max-w-xl mx-auto">
-            Book a consultation today and let us create a personalised treatment plan just for you. New patients are always welcome.
+          <p className="text-green-100 text-base leading-relaxed mb-10 max-w-lg mx-auto">
+            Skontaktuj się z nami już dziś. Wyceniamy szybko, działamy sprawnie — bez zbędnych formalności.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              data-testid="cta-book-btn"
-              onClick={() => setBookingOpen(true)}
-              className="btn-primary bg-blue-600 hover:bg-blue-500 text-white font-semibold px-10 py-4 rounded-full transition-all"
-            >
-              Book an Appointment
-            </button>
             <a
-              href="tel:+442071234567"
-              data-testid="cta-phone-link"
-              className="flex items-center justify-center gap-2 text-slate-300 hover:text-white border border-white/15 hover:border-white/30 font-semibold px-8 py-4 rounded-full transition-all"
+              href="tel:+48122681466"
+              data-testid="cta-phone-btn"
+              className="btn-dark inline-flex items-center justify-center gap-2.5 bg-white hover:bg-green-50 text-green-800 font-bold px-10 py-4 rounded-full transition-all text-base"
             >
-              <Phone size={17} />
-              Call Us Now
+              <Phone size={18} />
+              +48 12 268 14 66
             </a>
+            <Link
+              to="/contact"
+              data-testid="cta-contact-btn"
+              className="inline-flex items-center justify-center gap-2 text-white hover:text-green-100 border-2 border-white/30 hover:border-white/60 font-semibold px-9 py-4 rounded-full transition-all"
+            >
+              Napisz do nas <ArrowRight size={18} />
+            </Link>
           </div>
+          <p className="text-green-200 text-sm mt-8">
+            Pon–Pt, godz. 8:00–16:00 · biuro@bss.krakow.pl
+          </p>
         </div>
       </section>
 
       <Footer />
-      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </div>
   );
 }

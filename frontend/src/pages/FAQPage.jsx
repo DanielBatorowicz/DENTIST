@@ -1,153 +1,157 @@
-import { useState, useEffect } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ChevronDown, Phone, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import BookingModal from "@/components/BookingModal";
 import useSEO from "@/hooks/useSEO";
 
 const faqs = [
   {
-    id: "faq-1",
-    question: "How often should I visit the dentist?",
-    answer: "We recommend visiting every six months for a routine check-up and professional cleaning. However, patients with a history of gum disease, dental decay, or other oral health issues may benefit from more frequent visits. During your first appointment, Dr. Carter will advise on the most appropriate recall interval for your individual needs.",
+    q: "Jakie rodzaje odpadów odbiera firma BSS?",
+    a: "Odbieramy gruz i odpady budowlane, odpady komunalne, drewno, papę i materiały pokryciowe, wełnę mineralną i styropian, meble i gabaryty oraz inne odpady niespecjalistyczne. Prowadzimy również punkt odbioru odpadów w Skawinie (ul. Tyniecka 1), gdzie możesz samodzielnie przywieźć odpady.",
   },
   {
-    id: "faq-2",
-    question: "Do you accept new patients?",
-    answer: "Yes, we warmly welcome new patients of all ages, including families with children. You can book an appointment online using our booking form, call us directly, or visit us at our Harley Street practice. We aim to offer new patient appointments within 5 working days.",
+    q: "Jak szybko możecie odebrać odpady?",
+    a: "Staramy się realizować zlecenia w ciągu 24–48 godzin od kontaktu. W zależności od dostępności pojazdów i lokalizacji, termin może być jeszcze krótszy. W przypadku dużych zleceń lub regularnej obsługi ustalamy harmonogram indywidualnie.",
   },
   {
-    id: "faq-3",
-    question: "What should I do in a dental emergency?",
-    answer: "If you're experiencing a dental emergency — such as severe toothache, a broken tooth, a knocked-out tooth, or a lost filling — please call us immediately on +44 (0) 20 7123 4567. We keep emergency appointment slots available each day and aim to see urgent cases on the same day. Outside of clinic hours, you can contact NHS 111 for advice.",
+    q: "Jak zamówić wywóz odpadów?",
+    a: "Najszybciej przez telefon — pod numerem +48 12 268 14 66 lub +48 12 357 14 36 (czynne Pon–Pt, 8:00–16:00). Możesz też napisać na adres biuro@bss.krakow.pl lub skorzystać z formularza kontaktowego na stronie. Chętnie wycenimy usługę i umówimy termin.",
   },
   {
-    id: "faq-4",
-    question: "Do you offer cosmetic dentistry?",
-    answer: "Yes, we offer a comprehensive range of cosmetic dental treatments including teeth whitening, porcelain veneers, composite bonding, smile design, and Invisalign clear aligners. We recommend starting with a cosmetic consultation so Dr. Carter can understand your goals and recommend the most suitable treatment options.",
+    q: "Czy wywóz odpadów jest dokumentowany?",
+    a: "Tak. Każde zlecenie jest dokumentowane zgodnie z obowiązującymi przepisami. Wystawiamy stosowne dokumenty potwierdzające odbiór i utylizację odpadów, co jest szczególnie ważne dla firm zobowiązanych do prowadzenia ewidencji odpadów.",
   },
   {
-    id: "faq-5",
-    question: "Is teeth whitening safe?",
-    answer: "Yes — when performed or supervised by a qualified dental professional, teeth whitening is safe and effective. We use clinically approved whitening agents at appropriate concentrations. We'll always check your teeth and gums are healthy before starting any whitening treatment. Some patients experience mild, temporary sensitivity, which usually resolves within 24–48 hours.",
+    q: "Czy obsługujecie klientów indywidualnych (prywatnych)?",
+    a: "Tak, obsługujemy zarówno firmy (budowlane, deweloperów, wspólnoty mieszkaniowe, przedsiębiorstwa), jak i klientów prywatnych planujących remont, przeprowadzkę lub porządki. Cena zależy od ilości i rodzaju odpadów.",
   },
   {
-    id: "faq-6",
-    question: "Do you treat children?",
-    answer: "Yes, we provide friendly, gentle dental care for children from their first teeth through to their teenage years. We believe it's important for children to develop a positive relationship with dental care from an early age. Our practice is welcoming to families, and we take extra care to ensure children feel at ease.",
+    q: "Na jakim terenie działacie?",
+    a: "Działamy przede wszystkim na terenie Krakowa i okolic — w tym powiatu krakowskiego, wielickiego i myślenickiego. W przypadku zleceń spoza tych rejonów prosimy o kontakt telefoniczny w celu ustalenia szczegółów.",
   },
   {
-    id: "faq-7",
-    question: "How much does dental treatment cost?",
-    answer: "Treatment costs vary depending on the procedure. We provide detailed treatment plans with clear, itemised pricing before commencing any treatment so you know exactly what to expect. We believe in complete transparency and never charge hidden fees. We also offer 0% finance options for larger treatments — ask our team for details.",
+    q: "Co to są worki Big-Bag i jak je zamówić?",
+    a: "Worki Big-Bag to duże pojemniki z tkaniny o pojemności 1 m³, idealne do zbierania gruzu i odpadów budowlanych. Dostarczamy je pod wskazany adres, a po zapełnieniu odbieramy na Twoje zlecenie. Zamów przez telefon lub formularz kontaktowy.",
   },
   {
-    id: "faq-8",
-    question: "I'm nervous about visiting the dentist — can you help?",
-    answer: "Absolutely. Dental anxiety is extremely common and something we take very seriously. Dr. Carter has extensive experience working with nervous patients and will always take time to listen, explain every step in advance, and work at a pace you're comfortable with. We offer a calm, unhurried environment, and are happy to discuss sedation options for patients with significant anxiety.",
+    q: "Czy punkt w Skawinie przyjmuje wszystkie rodzaje odpadów?",
+    a: "Punkt odbioru przy ul. Tynieckiej 1 w Skawinie przyjmuje odpady budowlane, gruz, drewno, papę i materiały izolacyjne. Nie przyjmujemy odpadów niebezpiecznych (np. azbestu, farb, olejów), substancji chemicznych ani odpadów medycznych. Czynny Pon–Pt, 8:00–16:00.",
   },
   {
-    id: "faq-9",
-    question: "Do you offer dental implants?",
-    answer: "Yes, we provide full dental implant treatments, from single-tooth replacements to full-arch restorations. Dr. Carter will carry out a thorough assessment including a 3D CBCT scan to determine your suitability and create a tailored implant plan. We also offer bone grafting where required.",
+    q: "Czy ceny są z góry ustalone?",
+    a: "Ceny zależą od rodzaju, ilości i dostępności odpadów oraz od lokalizacji. Wyceniamy indywidualnie — bezpłatnie i bez zobowiązań. Skontaktuj się z nami, aby uzyskać konkretną ofertę.",
   },
   {
-    id: "faq-10",
-    question: "What are your payment and finance options?",
-    answer: "We accept all major credit and debit cards, bank transfers, and cash. We offer 0% interest-free finance over 12 months for treatments over £500, and longer-term finance options are also available. Please speak with our reception team to discuss a payment plan that suits your budget.",
+    q: "Czy możliwa jest stała, cykliczna obsługa firmy?",
+    a: "Tak, obsługujemy wielu klientów w trybie cyklicznym — tygodniowym, dwutygodniowym lub miesięcznym. Dla stałych klientów oferujemy atrakcyjne warunki współpracy. Skontaktuj się, aby omówić szczegóły umowy.",
   },
 ];
 
-export default function FAQPage() {
-  const [bookingOpen, setBookingOpen] = useState(false);
+function FAQItem({ q, a, index }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className={`border rounded-2xl overflow-hidden transition-all ${
+        open ? "border-green-300 bg-green-50/50" : "border-slate-200 bg-white hover:border-green-200"
+      }`}
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-4 px-7 py-5 text-left"
+      >
+        <div className="flex items-center gap-4">
+          <span className="font-heading font-bold text-green-600 text-sm w-6 flex-shrink-0">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="font-heading font-bold text-slate-900 text-base">{q}</span>
+        </div>
+        <ChevronDown
+          size={18}
+          className={`text-green-600 flex-shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="px-7 pb-6 pl-[4.25rem]">
+          <p className="text-slate-600 text-sm leading-relaxed">{a}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
+export default function FAQPage() {
   useSEO({
-    title: "Dental FAQ | Common Patient Questions | Bright Smile Dental Care",
-    description: "Answers to common dental questions: how often to visit, emergency dentistry, costs, cosmetic treatments, children's dentistry & more. London-based dental practice.",
-    keywords: "dental FAQ London, dentist questions, how often dentist, dental emergency London, dental costs London, nervous patients dentist London",
+    title: "FAQ — Najczęściej zadawane pytania | BSS Kraków Wywóz Odpadów",
+    description: "Odpowiedzi na pytania dotyczące wywozu odpadów w Krakowie: jak zamówić, co odbieramy, tereny działania, dokumentacja, Big-Bag, punkt Skawina. BSS Kraków.",
+    keywords: "FAQ wywóz odpadów Kraków, pytania BSS, jak zamówić wywóz gruzu, Big-Bag Kraków, punkt odbioru Skawina",
   });
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Page Hero */}
-      <section data-testid="faq-hero" className="pt-28 pb-16 bg-gradient-to-br from-blue-50 via-white to-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">Patient Information</p>
-          <h1 className="font-heading text-5xl md:text-6xl font-medium text-slate-900 mb-5">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            Find answers to the most common questions about our dental services, treatments, and appointments.
-          </p>
+      {/* ── PAGE HERO ── */}
+      <section className="pt-20 bg-[#071A0E] relative overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "linear-gradient(#22c55e 1px, transparent 1px), linear-gradient(90deg, #22c55e 1px, transparent 1px)", backgroundSize: "60px 60px" }}
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
+          <div className="max-w-2xl animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 bg-green-900/50 border border-green-700/40 rounded-full px-4 py-1.5 mb-6">
+              <span className="text-green-400 text-xs font-bold uppercase tracking-widest">Pytania i odpowiedzi</span>
+            </div>
+            <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 tracking-tight">
+              Masz pytania?<br />
+              <span className="text-gradient-lime">Mamy odpowiedzi.</span>
+            </h1>
+            <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+              Poniżej znajdziesz odpowiedzi na najczęściej zadawane pytania dotyczące naszych usług. Jeśli nie znajdziesz tego, czego szukasz — zadzwoń lub napisz.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section data-testid="faq-section" className="py-20 bg-white">
+      {/* ── FAQ LIST ── */}
+      <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Accordion type="single" collapsible className="space-y-3">
-            {faqs.map((faq, idx) => (
-              <AccordionItem
-                key={faq.id}
-                value={faq.id}
-                data-testid={`faq-item-${idx}`}
-                className="bg-slate-50 border border-slate-200 rounded-2xl px-6 overflow-hidden"
-              >
-                <AccordionTrigger
-                  data-testid={`faq-trigger-${idx}`}
-                  className="text-left font-body font-semibold text-slate-900 text-base py-5 hover:text-blue-600 hover:no-underline transition-colors"
-                >
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent
-                  data-testid={`faq-answer-${idx}`}
-                  className="text-slate-600 text-sm leading-relaxed pb-5"
-                >
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <FAQItem key={i} q={faq.q} a={faq.a} index={i} />
             ))}
-          </Accordion>
+          </div>
         </div>
       </section>
 
-      {/* Still have questions? */}
-      <section data-testid="faq-contact-cta" className="py-16 bg-blue-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-heading text-3xl md:text-4xl font-medium text-slate-900 mb-4">
-            Still Have a Question?
+      {/* ── STILL QUESTIONS ── */}
+      <section className="py-20 bg-[#F5FBF5]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
+            Nie znalazłeś odpowiedzi?
           </h2>
-          <p className="text-slate-600 text-base leading-relaxed mb-7 max-w-xl mx-auto">
-            Our friendly team is happy to help. Contact us directly or book a consultation and we'll answer all your questions in person.
+          <p className="text-slate-500 text-base leading-relaxed mb-8 max-w-lg mx-auto">
+            Skontaktuj się z nami bezpośrednio — chętnie odpowiemy na wszystkie Twoje pytania i pomożemy dobrać odpowiednią usługę.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              data-testid="faq-book-btn"
-              onClick={() => setBookingOpen(true)}
-              className="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full transition-all"
-            >
-              Book a Consultation
-            </button>
             <a
-              href="/contact"
-              data-testid="faq-contact-link"
-              className="flex items-center justify-center text-slate-700 hover:text-blue-600 font-semibold px-8 py-4 rounded-full border-2 border-slate-200 hover:border-blue-200 transition-all"
+              href="tel:+48122681466"
+              className="btn-primary inline-flex items-center justify-center gap-2.5 bg-green-600 hover:bg-green-700 text-white font-bold px-9 py-4 rounded-full transition-all"
             >
-              Contact Us
+              <Phone size={17} />
+              Zadzwoń: +48 12 268 14 66
             </a>
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center gap-2 text-slate-700 hover:text-green-700 border-2 border-slate-200 hover:border-green-300 font-semibold px-8 py-4 rounded-full transition-all"
+            >
+              Formularz kontaktowy <ArrowRight size={17} />
+            </Link>
           </div>
         </div>
       </section>
 
       <Footer />
-      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </div>
   );
 }
