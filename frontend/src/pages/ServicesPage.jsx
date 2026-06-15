@@ -61,7 +61,7 @@ const services = [
       "Rynny i obróbki blacharskie",
       "Folie dachowe i paroizolacje",
     ],
-    image: "/photos/truck1.jpg",
+    image: "/photos/hero.jpg",
     accent: "slate",
   },
   {
@@ -75,7 +75,7 @@ const services = [
       "Keramzyt i perlita",
       "Płyty termoizolacyjne",
     ],
-    image: "/photos/truck2.jpg",
+    image: "/photos/work1.jpg",
     accent: "blue",
   },
   {
@@ -89,7 +89,7 @@ const services = [
       "Wyposażenie biurowe",
       "Dywany i wykładziny",
     ],
-    image: "/photos/office1.jpg",
+    image: "/photos/hero.jpg",
     accent: "violet",
   },
   {
@@ -103,7 +103,7 @@ const services = [
       "Brak opłaty za wynajem",
       "Możliwość zamówienia wielu worków",
     ],
-    image: "/photos/hero.jpg",
+    image: "/photos/work2.jpg",
     accent: "orange",
   },
   {
@@ -117,7 +117,7 @@ const services = [
       "Materiały izolacyjne",
       "Czynne Pon–Pt, 8:00–16:00",
     ],
-    image: "/photos/office2.jpg",
+    image: "/photos/truck1.jpg",
     accent: "teal",
   },
 ];

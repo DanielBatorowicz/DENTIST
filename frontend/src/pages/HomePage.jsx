@@ -11,40 +11,40 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 /* ── Real BSS photos — served locally from /public/photos/ ── */
 const BSS = {
-  hero:    "/photos/hero.jpg",
-  about:   "/photos/about.jpg",
-  work1:   "/photos/work1.jpg",
-  work2:   "/photos/work2.jpg",
-  truck1:  "/photos/truck1.jpg",
-  truck2:  "/photos/truck2.jpg",
-  office1: "/photos/office1.jpg",
-  office2: "/photos/office2.jpg",
+  fleet:      "/photos/hero.jpg",     // 3 BSS trucks (Mercedes, Renault, Scania) lined up at base
+  driver:     "/photos/about.jpg",    // smiling BSS driver in truck cab
+  waste:      "/photos/work1.jpg",    // red Mercedes truck next to cardboard/waste pile
+  containers: "/photos/work2.jpg",    // blue BSS skip containers with logo and phone number
+  building:   "/photos/truck1.jpg",   // BSS headquarters / Skawina base building (green facade)
+  dispatch:   "/photos/truck2.jpg",   // BSS dispatchers at computer monitors in office
+  team:       "/photos/office1.jpg",  // BSS office team at desks with fleet-tracking screens
+  desk:       "/photos/office2.jpg",  // close-up of desk with BSS business card holder
 };
 
 const serviceSections = [
   {
-    img: BSS.work1,
+    img: BSS.waste,
     label: "01 / Gruz i odpady budowlane",
     title: "Remontowi, budowlani, deweloperzy",
     desc: "Wywóz gruzu, ceramiki, ziemi i wszelkich odpadów budowlanych. Działamy szybko — możliwy odbiór już następnego dnia.",
     align: "left",
   },
   {
-    img: BSS.truck1,
+    img: BSS.fleet,
     label: "02 / Flota EURO 6",
     title: "Nowoczesne pojazdy, niezawodna obsługa",
     desc: "Całą flotą spełniamy normę EURO 6. Regularny serwis, GPS, pełne ubezpieczenie — każde zlecenie realizujemy bezpiecznie.",
     align: "right",
   },
   {
-    img: BSS.work2,
+    img: BSS.containers,
     label: "03 / Kontenery Big-Bag",
     title: "Elastyczne Big-Bagi na odpady",
     desc: "Worki Big-Bag o pojemności 1 m³ — dostarczamy, odbieramy po zapełnieniu. Bez umowy, bez okresu minimalnego.",
     align: "left",
   },
   {
-    img: BSS.truck2,
+    img: BSS.building,
     label: "04 / Punkt odbioru — Skawina",
     title: "Przywieź sam, my utylizujemy",
     desc: "Baza ul. Tyniecka 1, Skawina — punkt odbioru odpadów budowlanych czynny Pon–Pt, 8:00–16:00. Szybko i bez kolejek.",
@@ -292,7 +292,7 @@ export default function HomePage() {
             <Reveal dir="left" delay={0} className="relative order-2 lg:order-1">
               <div className="clip-reveal rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl">
                 <img
-                  src={BSS.about}
+                  src={BSS.driver}
                   alt="Realizacja zlecenia BSS — wywóz odpadów Kraków"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -413,7 +413,7 @@ export default function HomePage() {
       ══════════════════════════════════════ */}
       <section className="py-0 bg-slate-900 overflow-hidden">
         <div className="flex gap-0">
-          {[BSS.work1, BSS.about, BSS.truck1, BSS.office1, BSS.work2, BSS.truck2, BSS.office2].map((src, i) => (
+          {[BSS.waste, BSS.driver, BSS.building, BSS.team, BSS.containers, BSS.dispatch, BSS.desk].map((src, i) => (
             <div
               key={i}
               className="flex-1 min-w-0 relative overflow-hidden group"
@@ -477,7 +477,7 @@ export default function HomePage() {
       ══════════════════════════════════════ */}
       <section data-testid="cta-section" className="relative py-28 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={BSS.truck2} alt="Flota BSS" className="w-full h-full object-cover" loading="lazy" />
+          <img src={BSS.fleet} alt="Flota BSS" className="w-full h-full object-cover" loading="lazy" />
           <div className="absolute inset-0 bg-green-900/88" />
         </div>
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

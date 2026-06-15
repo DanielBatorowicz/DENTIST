@@ -60,7 +60,7 @@ export default function AboutPage() {
       <section className="pt-20 bg-[#071A0E] relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/photos/truck2.jpg"
+            src="/photos/hero.jpg"
             alt="Flota pojazdów BSS"
             className="w-full h-full object-cover opacity-15"
           />
