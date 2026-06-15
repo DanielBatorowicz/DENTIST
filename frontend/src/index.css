@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 body {
     margin: 0;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #FFFFFF;
@@ -14,15 +14,15 @@ body {
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Syne', sans-serif;
 }
 
 .font-heading {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Syne', sans-serif;
 }
 
 .font-body {
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 html {
@@ -37,19 +37,19 @@ html {
         --card-foreground: 222 47% 11%;
         --popover: 0 0% 100%;
         --popover-foreground: 222 47% 11%;
-        --primary: 221 83% 53%;
+        --primary: 142 71% 45%;
         --primary-foreground: 0 0% 98%;
-        --secondary: 214 32% 91%;
-        --secondary-foreground: 222 47% 11%;
-        --muted: 214 32% 91%;
-        --muted-foreground: 215 16% 47%;
-        --accent: 214 95% 93%;
-        --accent-foreground: 221 83% 53%;
+        --secondary: 142 30% 91%;
+        --secondary-foreground: 142 47% 11%;
+        --muted: 142 30% 91%;
+        --muted-foreground: 142 16% 47%;
+        --accent: 142 60% 93%;
+        --accent-foreground: 142 71% 35%;
         --destructive: 0 84% 60%;
         --destructive-foreground: 0 0% 98%;
         --border: 214 32% 91%;
         --input: 214 32% 91%;
-        --ring: 221 83% 53%;
+        --ring: 142 71% 45%;
         --radius: 0.75rem;
     }
 }
@@ -63,20 +63,13 @@ html {
     }
 }
 
-/* Fade up animation */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(24px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeInUp 0.7s ease forwards;
 }
 
 .animate-delay-100 { animation-delay: 0.1s; opacity: 0; }
@@ -85,59 +78,99 @@ html {
 .animate-delay-400 { animation-delay: 0.4s; opacity: 0; }
 .animate-delay-500 { animation-delay: 0.5s; opacity: 0; }
 
-/* Hero gradient overlay */
-.hero-gradient {
-    background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 50%, #F0F9FF 100%);
+/* ── KEN BURNS ── */
+@keyframes kenBurns {
+  0%   { transform: scale(1)    translate(0, 0); }
+  100% { transform: scale(1.12) translate(-2%, -1%); }
+}
+.ken-burns {
+  animation: kenBurns 18s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
-/* Card hover effect */
+/* ── SCROLL REVEAL ── */
+[data-reveal] {
+  opacity: 0;
+  transition: opacity 0.85s cubic-bezier(.25,.46,.45,.94),
+              transform 0.85s cubic-bezier(.25,.46,.45,.94);
+}
+[data-reveal="up"]    { transform: translateY(55px); }
+[data-reveal="left"]  { transform: translateX(-55px); }
+[data-reveal="right"] { transform: translateX(55px); }
+[data-reveal="scale"] { transform: scale(0.88); }
+[data-reveal="fade"]  { transform: none; }
+[data-reveal].in-view { opacity: 1; transform: none; }
+
+/* ── IMAGE CLIP-PATH REVEAL ── */
+.clip-reveal {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.1s cubic-bezier(.77,0,.175,1);
+}
+.clip-reveal.in-view,
+[data-reveal].in-view .clip-reveal {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* ── PARALLAX IMG ── */
+.parallax-img {
+  transform-origin: center;
+  transition: transform 0.1s linear;
+}
+
 .card-hover {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.08);
+    transform: translateY(-5px);
+    box-shadow: 0 24px 48px rgba(22, 163, 74, 0.10);
 }
 
-/* Blue button glow */
 .btn-primary {
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 16px rgba(22, 163, 74, 0.35);
     transition: all 0.2s ease;
 }
 .btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(22, 163, 74, 0.45);
+    transform: translateY(-2px);
 }
 
-/* =============================================
-   PREMIUM UTILITIES — Gradient text, section labels
-   ============================================= */
+.btn-dark {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: all 0.2s ease;
+}
+.btn-dark:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    transform: translateY(-2px);
+}
 
-/* Gradient headline text */
 .text-gradient {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 50%, #22c55e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Refined scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #f8fafc; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+.text-gradient-lime {
+  background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-/* Better text rendering globally */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #15803d; }
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* Premium section divider */
 .divider-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #DBEAFE 40%, #DBEAFE 60%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, #BBF7D0 40%, #BBF7D0 60%, transparent 100%);
 }
 
 @layer base {
