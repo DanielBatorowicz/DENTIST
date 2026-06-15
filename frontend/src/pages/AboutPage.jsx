@@ -60,7 +60,7 @@ export default function AboutPage() {
       <section className="pt-20 bg-[#071A0E] relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?auto=format&fit=crop&w=1920&q=80"
+            src="/photos/truck2.jpg"
             alt="Flota pojazdów BSS"
             className="w-full h-full object-cover opacity-15"
           />
@@ -125,8 +125,8 @@ export default function AboutPage() {
             <div className="relative">
               <div className="rounded-3xl overflow-hidden aspect-[3/4] shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1581094289810-adf5d25690e0?auto=format&fit=crop&w=800&q=80"
-                  alt="Profesjonalny wywóz odpadów budowlanych w Krakowie"
+                  src="/photos/about.jpg"
+                  alt="Realizacja zlecenia BSS — wywóz odpadów Kraków"
                   className="w-full h-full object-cover"
                 />
               </div>

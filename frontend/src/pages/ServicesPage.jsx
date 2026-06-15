@@ -19,7 +19,7 @@ const services = [
       "Folie budowlane i opakowania",
       "Drobny złom budowlany",
     ],
-    image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/work1.jpg",
     accent: "amber",
   },
   {
@@ -33,7 +33,7 @@ const services = [
       "Organika z gastronomii",
       "Odpady biurowe",
     ],
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/work2.jpg",
     accent: "green",
   },
   {
@@ -47,7 +47,7 @@ const services = [
       "Skrzynki, palety drewniane",
       "Odpady z parków i ogrodów",
     ],
-    image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/about.jpg",
     accent: "emerald",
   },
   {
@@ -61,7 +61,7 @@ const services = [
       "Rynny i obróbki blacharskie",
       "Folie dachowe i paroizolacje",
     ],
-    image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/truck1.jpg",
     accent: "slate",
   },
   {
@@ -75,7 +75,7 @@ const services = [
       "Keramzyt i perlita",
       "Płyty termoizolacyjne",
     ],
-    image: "https://images.unsplash.com/photo-1558346489-19413928158b?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/truck2.jpg",
     accent: "blue",
   },
   {
@@ -89,7 +89,7 @@ const services = [
       "Wyposażenie biurowe",
       "Dywany i wykładziny",
     ],
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/office1.jpg",
     accent: "violet",
   },
   {
@@ -103,7 +103,7 @@ const services = [
       "Brak opłaty za wynajem",
       "Możliwość zamówienia wielu worków",
     ],
-    image: "https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/hero.jpg",
     accent: "orange",
   },
   {
@@ -117,7 +117,7 @@ const services = [
       "Materiały izolacyjne",
       "Czynne Pon–Pt, 8:00–16:00",
     ],
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
+    image: "/photos/office2.jpg",
     accent: "teal",
   },
 ];
@@ -148,8 +148,8 @@ export default function ServicesPage() {
       <section className="pt-20 bg-[#071A0E] relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=1920&q=80"
-            alt="Wywóz odpadów"
+            src="/photos/hero.jpg"
+            alt="Wywóz odpadów BSS Kraków"
             className="w-full h-full object-cover opacity-15"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#071A0E]/80 to-[#071A0E]/95" />

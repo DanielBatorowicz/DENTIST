@@ -9,14 +9,16 @@ import Footer from "@/components/Footer";
 import useSEO from "@/hooks/useSEO";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-/* ── Real BSS photos ── */
+/* ── Real BSS photos — served locally from /public/photos/ ── */
 const BSS = {
-  hero:     "https://www.bss.krakow.pl/wp-content/uploads/2023/01/zdjecie-na-strone-glowna.jpg",
-  about:    "https://www.bss.krakow.pl/wp-content/uploads/2020/05/DSC04555.jpg",
-  work1:    "https://www.bss.krakow.pl/wp-content/uploads/elementor/thumbs/Realizacja-uslud-zdjecie-glowne-q166inw2a05o0cyr6cec2tstjaj1o8s23nrputxyc0.jpg",
-  work2:    "https://www.bss.krakow.pl/wp-content/uploads/elementor/thumbs/Realizacja-uslug-zdjecie-drugie-q166inw2a05o0cyr6cec2tstjaj1o8s23nrputxyc0.jpg",
-  truck1:   "https://www.bss.krakow.pl/wp-content/uploads/elementor/thumbs/DSC04700-q166k6epae8apqrkbzyp3g1jzn2c2oshn5lvovp4b4.jpg",
-  truck2:   "https://www.bss.krakow.pl/wp-content/uploads/elementor/thumbs/DSC04774-q166jv4n0dsuuf7y5v369iw0v0lxibjplls1xk5uds.jpg",
+  hero:    "/photos/hero.jpg",
+  about:   "/photos/about.jpg",
+  work1:   "/photos/work1.jpg",
+  work2:   "/photos/work2.jpg",
+  truck1:  "/photos/truck1.jpg",
+  truck2:  "/photos/truck2.jpg",
+  office1: "/photos/office1.jpg",
+  office2: "/photos/office2.jpg",
 };
 
 const serviceSections = [
@@ -411,7 +413,7 @@ export default function HomePage() {
       ══════════════════════════════════════ */}
       <section className="py-0 bg-slate-900 overflow-hidden">
         <div className="flex gap-0">
-          {[BSS.work1, BSS.about, BSS.truck1, BSS.work2, BSS.truck2].map((src, i) => (
+          {[BSS.work1, BSS.about, BSS.truck1, BSS.office1, BSS.work2, BSS.truck2, BSS.office2].map((src, i) => (
             <div
               key={i}
               className="flex-1 min-w-0 relative overflow-hidden group"
