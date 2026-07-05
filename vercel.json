@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/game", "destination": "/game/index.html" },
+    { "source": "/game/(.*)", "destination": "/game/$1" },
     { "source": "/api/(.*)", "destination": "/backend/$1" },
     { "source": "/(.*)", "destination": "/frontend/$1" }
   ]

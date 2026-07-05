@@ -1,0 +1,15 @@
+{
+  "name": "Arena Duel — 1v1 PvP",
+  "short_name": "Arena Duel",
+  "description": "Mobilna zręcznościowa gra 1v1 PvP: cztery klasy, celowanie żyroskopem, mecze do 3 wygranych rund.",
+  "lang": "pl",
+  "start_url": ".",
+  "scope": ".",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#1e1b4b",
+  "theme_color": "#1e1b4b",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
