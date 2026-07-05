@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SuitCam</string>
+    <string name="hint_point_camera">Skieruj kamerę na twarz — filtr nałoży się automatycznie</string>
+    <string name="take_photo">📸 Zdjęcie</string>
+    <string name="switch_camera">🔄 Kamera</string>
+    <string name="processing_photo">Przetwarzanie zdjęcia…</string>
+    <string name="photo_saved">Zapisano zdjęcie w galerii (album SuitCam)</string>
+    <string name="photo_save_failed">Nie udało się zapisać zdjęcia</string>
+    <string name="camera_permission_denied">Bez dostępu do kamery aplikacja nie może działać</string>
+    <string name="camera_start_failed">Nie udało się uruchomić kamery</string>
+</resources>
