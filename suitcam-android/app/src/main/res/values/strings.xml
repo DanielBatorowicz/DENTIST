@@ -9,4 +9,9 @@
     <string name="photo_save_failed">Nie udało się zapisać zdjęcia</string>
     <string name="camera_permission_denied">Bez dostępu do kamery aplikacja nie może działać</string>
     <string name="camera_start_failed">Nie udało się uruchomić kamery</string>
+    <string name="stream_start">🌐 Wirtualna kamera</string>
+    <string name="stream_stop">⏹ Zatrzymaj kamerę wirtualną</string>
+    <string name="stream_info">Strumień z filtrem: %1$s\nPodłącz w OBS (źródło Media/Przeglądarka) lub otwórz w przeglądarce</string>
+    <string name="stream_failed">Nie udało się uruchomić serwera strumienia (port 8080 zajęty?)</string>
+    <string name="stream_no_wifi">Brak połączenia Wi-Fi — telefon i komputer muszą być w tej samej sieci</string>
 </resources>

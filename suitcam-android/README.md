@@ -9,22 +9,33 @@ i jest nakładany zarówno na podgląd na żywo, jak i na zapisywane zdjęcia.
 
 - 📷 Podgląd na żywo z kamery przedniej lub tylnej (CameraX)
 - 🙂 Wykrywanie wielu twarzy jednocześnie wraz z pozycją oczu (ML Kit Face Detection)
-- 🕶️ Okulary przeciwsłoneczne dopasowane do rozstawu i nachylenia oczu
-- 🕴️ Czarny garnitur (marynarka, klapy, biała koszula, krawat) rysowany pod brodą
+- 🕶️ Okulary w stylu wayfarer: gradientowe szkła, belka, mostek, zauszniki, odblaski
+- 🕴️ Czarny garnitur: marynarka z cieniowaniem, klapy z wcięciem, biała koszula
+  z kołnierzykiem, krawat z połyskiem, guziki i poszetka
+- 🌐 **Wirtualna kamera po sieci**: wbudowany serwer MJPEG strumieniuje obraz
+  z nałożonym filtrem pod `http://IP-telefonu:8080`
 - 📸 Zapis zdjęcia z nałożonym filtrem do galerii (album `Pictures/SuitCam`)
 - 🔄 Przełączanie kamery przód/tył
 
-## Ważne: dlaczego to nie jest „wirtualna kamera” systemowa
+## Wirtualna kamera — jak używać
 
-Android **nie pozwala aplikacjom bez roota rejestrować się jako urządzenie kamery**
-widoczne w innych aplikacjach (Teams, Zoom, Messenger itd.). Nie istnieje publiczne
-API odpowiadające np. OBS Virtual Camera z komputera. Dlatego:
+Android **nie pozwala aplikacjom bez roota rejestrować się jako systemowe urządzenie
+kamery** widoczne w innych aplikacjach na telefonie (Teams, Zoom, Messenger itd.) —
+nie istnieje publiczne API odpowiadające OBS Virtual Camera z komputera.
+SuitCam rozwiązuje to strumieniem sieciowym:
 
-- ta aplikacja jest pełnoprawnym aparatem z filtrem — podgląd i zdjęcia mają nałożony garnitur i okulary,
-- jeśli potrzebujesz filtra w wideorozmowach, realne opcje to:
-  - **telefon jako kamera komputera**: OBS + [DroidCam](https://droidcam.app)/Camo na komputerze i wirtualna kamera OBS,
-  - **root + moduły typu Xposed** (nie zalecane, ryzyko bezpieczeństwa),
-  - na niektórych urządzeniach efekty producenta (np. tryby portretowe) — bez możliwości własnych filtrów.
+1. W aplikacji naciśnij **„🌐 Wirtualna kamera”** — na ekranie pojawi się adres,
+   np. `http://192.168.1.50:8080` (telefon i komputer muszą być w tej samej sieci Wi-Fi).
+2. **W przeglądarce / VLC**: otwórz ten adres — zobaczysz obraz z filtrem na żywo.
+3. **Jako kamera w Teams/Zoom (przez komputer)**:
+   - zainstaluj [OBS Studio](https://obsproject.com),
+   - dodaj źródło **Przeglądarka** (URL = adres z telefonu) albo **Źródło multimedialne**
+     (odznacz „plik lokalny”, wklej adres),
+   - kliknij **Start Virtual Camera** — w Teams/Zoom wybierz kamerę „OBS Virtual Camera”.
+
+Filtr jest nakładany na strumień po stronie telefonu, więc każdy odbiorca widzi
+garnitur i okulary. Alternatywa bez OBS: aplikacje typu „IP Camera Adapter”
+czytające MJPEG jako webcam.
 
 ## Budowanie
 
@@ -50,10 +61,12 @@ Z linii poleceń (wymagany Android SDK i JDK 17):
 | Plik | Rola |
 | --- | --- |
 | `MainActivity.kt` | uprawnienia, konfiguracja CameraX (podgląd + analiza + zdjęcia), UI |
-| `FaceAnalyzer.kt` | analiza klatek: ML Kit wykrywa twarze i punkty oczu |
+| `FaceAnalyzer.kt` | analiza klatek: ML Kit wykrywa twarze i punkty oczu; przy aktywnym streamie konwertuje klatki na bitmapy |
 | `SuitOverlayView.kt` | mapowanie współrzędnych obrazu na ekran (z lustrem dla kamery przedniej) i rysowanie |
 | `SuitRenderer.kt` | wektorowe rysowanie garnituru i okularów na dowolnym `Canvas` |
 | `PhotoProcessor.kt` | nakładanie filtra na zrobione zdjęcie i zapis do `MediaStore` |
+| `StreamEngine.kt` | nakładanie filtra na klatki streamu i kompresja JPEG |
+| `MjpegServer.kt` | serwer HTTP multipart/x-mixed-replace (MJPEG) dla OBS/VLC/przeglądarki |
 
 Filtr jest rysowany wektorowo (Canvas/Path), więc skaluje się do dowolnej
 rozdzielczości i liczby twarzy — bez żadnych bitmap w zasobach.

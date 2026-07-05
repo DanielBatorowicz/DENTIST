@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private var lensFacing = CameraSelector.LENS_FACING_FRONT
     private var imageCapture: ImageCapture? = null
     private var analyzer: FaceAnalyzer? = null
+    private val streamEngine = StreamEngine(port = 8080)
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.captureButton.setOnClickListener { takePhoto() }
         binding.switchButton.setOnClickListener { switchCamera() }
+        binding.streamButton.setOnClickListener { toggleStream() }
 
         requestPermissionsIfNeeded()
     }
@@ -90,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         imageCapture = capture
 
         analyzer?.close()
-        val faceAnalyzer = FaceAnalyzer { faces, width, height ->
+        val faceAnalyzer = FaceAnalyzer(frameSink = streamEngine) { faces, width, height ->
             binding.overlay.update(faces, width, height)
         }
         analyzer = faceAnalyzer
@@ -109,6 +111,30 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, R.string.camera_start_failed, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun toggleStream() {
+        if (streamEngine.isRunning) {
+            streamEngine.stop()
+            binding.streamInfo.visibility = android.view.View.GONE
+            binding.streamButton.setText(R.string.stream_start)
+            return
+        }
+        try {
+            streamEngine.start()
+        } catch (e: Exception) {
+            Toast.makeText(this, R.string.stream_failed, Toast.LENGTH_LONG).show()
+            return
+        }
+        val url = streamEngine.streamUrl()
+        if (url == null) {
+            streamEngine.stop()
+            Toast.makeText(this, R.string.stream_no_wifi, Toast.LENGTH_LONG).show()
+            return
+        }
+        binding.streamInfo.text = getString(R.string.stream_info, url)
+        binding.streamInfo.visibility = android.view.View.VISIBLE
+        binding.streamButton.setText(R.string.stream_stop)
     }
 
     private fun switchCamera() {
@@ -157,6 +183,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        streamEngine.stop()
         analyzer?.close()
         cameraExecutor.shutdown()
     }
