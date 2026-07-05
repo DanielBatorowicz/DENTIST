@@ -50,6 +50,9 @@ class MainActivity : AppCompatActivity() {
         binding.captureButton.setOnClickListener { takePhoto() }
         binding.switchButton.setOnClickListener { switchCamera() }
         binding.streamButton.setOnClickListener { toggleStream() }
+        binding.callButton.setOnClickListener {
+            startActivity(android.content.Intent(this, CallActivity::class.java))
+        }
 
         requestPermissionsIfNeeded()
     }

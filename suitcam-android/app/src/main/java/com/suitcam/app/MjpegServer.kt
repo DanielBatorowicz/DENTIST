@@ -79,6 +79,9 @@ class MjpegServer(private val port: Int) {
                             "Connection: close\r\n" +
                             "Cache-Control: no-cache\r\n" +
                             "Pragma: no-cache\r\n" +
+                            // CORS: strona wideorozmowy w WebView rysuje ten strumień
+                            // na canvasie — bez tego nagłówka canvas byłby "tainted".
+                            "Access-Control-Allow-Origin: *\r\n" +
                             "Content-Type: multipart/x-mixed-replace; boundary=$boundary\r\n" +
                             "\r\n"
                         ).toByteArray()
