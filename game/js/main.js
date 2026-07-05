@@ -6,9 +6,8 @@
 import { Engine } from './core/engine.js';
 import { Input } from './core/input.js';
 import { initAudio, sfx } from './core/audio.js';
-import { WORLD, PLAYER_COLORS } from './game/config.js';
+import { PLAYER_COLORS } from './game/config.js';
 import { Match } from './game/match.js';
-import { Renderer } from './render/renderer.js';
 import { Particles } from './render/effects.js';
 import { layoutControls } from './ui/controls.js';
 import { Screens } from './ui/screens.js';
@@ -16,16 +15,19 @@ import { Screens } from './ui/screens.js';
 const canvas = document.getElementById('game'); // transparent UI overlay + input surface
 const glCanvas = document.getElementById('gl'); // WebGL scene underneath
 
-// Prefer the 3D renderer; fall back to pure 2D canvas when WebGL (or the
-// vendored three.js module) is unavailable on the device.
+// The game world is fully 3D (WebGL). Every phone browser from the last
+// decade supports WebGL; if it is genuinely unavailable, say so clearly.
 let renderer;
 try {
   const { Renderer3D } = await import('./render/renderer3d.js');
   renderer = new Renderer3D(glCanvas, canvas);
 } catch (e) {
-  console.warn('WebGL renderer unavailable — using the 2D fallback.', e);
-  glCanvas.style.display = 'none';
-  renderer = new Renderer(canvas);
+  console.error('WebGL unavailable', e);
+  document.getElementById('ui').classList.add('visible');
+  document.getElementById('ui').innerHTML =
+    '<div class="screen"><h2>😕 Ta przeglądarka nie obsługuje WebGL</h2>' +
+    '<p class="hint">Gra wymaga grafiki 3D. Zaktualizuj przeglądarkę lub włącz akcelerację sprzętową.</p></div>';
+  throw e;
 }
 
 const input = new Input(canvas);
@@ -40,10 +42,10 @@ let lastSetup = null; // remembered for the rematch button
 // the renderer or particle system directly.
 const fx = {
   sfx,
-  hitSpark: (x, y) => particles.hitSpark(x, y),
-  blockSpark: (x, y) => particles.blockSpark(x, y),
-  dust: (x, y, n) => particles.dust(x, y, n),
-  deathBurst: (p) => particles.deathBurst(p.x, WORLD.groundY - 55, PLAYER_COLORS[p.index]),
+  hitSpark: (x, y, z) => particles.hitSpark(x, y, z),
+  blockSpark: (x, y, z) => particles.blockSpark(x, y, z),
+  dust: (x, z, n) => particles.dust(x, z, n),
+  deathBurst: (p) => particles.deathBurst(p.x, 55, p.z, PLAYER_COLORS[p.index]),
   shake: (power) => renderer.shake(power),
 };
 

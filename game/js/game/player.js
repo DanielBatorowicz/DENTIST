@@ -1,23 +1,31 @@
 /**
  * player.js — the fighter entity and its state machine.
  *
+ * Players roam freely on the plaza (x/z plane). The joystick moves the
+ * character in world space (the camera is roughly axis-aligned, so screen
+ * up = north). The character automatically turns to face the opponent —
+ * movement is effectively strafing, which keeps 1v1 combat readable.
+ *
  * States:
- *   idle    — standing / walking (movement lives here)
+ *   idle    — standing / running (movement lives here)
  *   attack  — melee swing: windup -> active hit window -> recover
- *   draw    — archer only: charging the bow, aiming via gyro/stick
+ *   draw    — archer only: charging the bow, aiming via gyro
  *   block   — shield raised (tank class only)
  *   dash    — special dash-type ability in flight
  *   hitstun — staggered after taking a hit
  *   dead    — round lost, falling over
  *
- * Commands come in a normalized `cmd` object each frame, so a human on
- * touch, a human on keyboard and the AI all drive the player identically.
+ * ARCHER AIMING: the ballistic elevation needed to hit the opponent at the
+ * current draw strength is solved analytically every frame; the gyroscope
+ * then offsets that solution (tilt up/down = elevation, tilt left/right =
+ * horizontal trim), so the bow is playable everywhere and precise with
+ * motion controls. Dodging and cover are the counterplay.
  */
 
 import {
-  WORLD, CLASSES, HIT_STUN, KB_DECAY, PLAYER_HALF_W,
-  GYRO_PITCH_GAIN, GYRO_YAW_GAIN, AIM_MIN, AIM_MAX, STICK_AIM_SPEED,
-  clamp, lerp,
+  WORLD, CLASSES, OBSTACLES, GRAVITY, KB_DECAY, PLAYER_R, BOW_H, TURN_SPEED,
+  GYRO_PITCH_GAIN, GYRO_YAW_GAIN, AIM_MIN, AIM_MAX, YAW_TRIM_MAX,
+  clamp, lerp, angleDiff,
 } from './config.js';
 import { tryMeleeHit } from './combat.js';
 import { Arrow } from './projectile.js';
@@ -39,36 +47,35 @@ export class Player {
     this.index = index;
     this.cls = CLASSES[classId];
     this.isHuman = true; // false for the bot — gyro aiming is humans-only
-    this.wins = 0;      // round wins in the current match
-    this.reset(0, 1);
+    this.wins = 0;       // round wins in the current match
+    this.reset(0, 0, 0);
   }
 
   /** Reset for a new round. */
-  reset(x, facing) {
+  reset(x, z, heading) {
     this.x = x;
-    this.facing = facing;
-    this.vx = 0;            // knockback velocity (decays)
+    this.z = z;
+    this.heading = heading;  // facing direction on the x/z plane (radians)
+    this.kbx = 0;            // knockback velocity (decays)
+    this.kbz = 0;
     this.hp = this.cls.hp;
     this.dispHp = this.cls.hp; // smoothed HP shown by the HUD damage trail
     this.state = 'idle';
-    this.t = 0;             // time inside the current state
+    this.t = 0;              // time inside the current state
     this.atkCd = 0;
     this.specialCd = 0;
-    this.charge = 0;        // bow draw charge (s)
-    this.aim = 0.25;        // bow elevation in radians (persists between shots)
-    this.aimBase = this.aim;
-    this.drawRef = null;    // gyro snapshot taken when the draw started
+    this.charge = 0;         // bow draw charge (s)
+    this.aim = 0.25;         // bow elevation above horizontal (radians)
+    this.yawTrim = 0;        // gyro horizontal trim applied on top of auto-face
+    this.drawRef = null;     // gyro snapshot taken when the draw started
     this.arrows = this.cls.ranged ? this.cls.bow.maxArrows : 0;
     this.arrowT = 0;
-    this.hitDone = false;   // one hit per swing / dash
-    this.flash = 0;         // white hit flash timer
+    this.hitDone = false;    // one hit per swing / dash
+    this.flash = 0;          // white hit flash timer
     this.deadT = 0;
-    this.walkT = 0;         // walk cycle phase for the renderer
+    this.walkT = 0;          // walk cycle phase for the renderer
     this.moving = false;
-  }
-
-  groundY() {
-    return WORLD.groundY;
+    this.dashDir = 0;        // heading captured when a dash starts
   }
 
   die() {
@@ -103,10 +110,12 @@ export class Player {
       }
     }
 
-    // Always face the opponent (with a small dead zone to avoid jitter
-    // when the fighters overlap).
-    if (this.alive && Math.abs(opp.x - this.x) > 14) {
-      this.facing = opp.x > this.x ? 1 : -1;
+    // Smoothly turn towards the opponent (combat lock-on).
+    if (this.alive && this.state !== 'dash') {
+      const want = Math.atan2(opp.z - this.z, opp.x - this.x) +
+        (this.state === 'draw' ? this.yawTrim : 0);
+      const d = angleDiff(this.heading, want);
+      this.heading += clamp(d, -TURN_SPEED * dt, TURN_SPEED * dt);
     }
 
     switch (this.state) {
@@ -128,7 +137,7 @@ export class Player {
         break;
 
       case 'draw':
-        this._updateDraw(dt, cmd, fx, arrows);
+        this._updateDraw(dt, cmd, opp, fx, arrows);
         break;
 
       case 'block':
@@ -141,20 +150,46 @@ export class Player {
     }
 
     // Knockback integration + decay (applies in every state).
-    this.x += this.vx * dt;
-    this.vx -= this.vx * Math.min(1, KB_DECAY * dt);
+    this.x += this.kbx * dt;
+    this.z += this.kbz * dt;
+    const decay = Math.min(1, KB_DECAY * dt);
+    this.kbx -= this.kbx * decay;
+    this.kbz -= this.kbz * decay;
+
+    this._collide();
+  }
+
+  /** Arena walls + solid plaza props (cylinder push-out). */
+  _collide() {
     this.x = clamp(this.x, WORLD.wallPad, WORLD.width - WORLD.wallPad);
+    this.z = clamp(this.z, WORLD.wallPad, WORLD.depth - WORLD.wallPad);
+    for (const o of OBSTACLES) {
+      const dx = this.x - o.x;
+      const dz = this.z - o.z;
+      const d = Math.hypot(dx, dz);
+      const min = o.r + PLAYER_R;
+      if (d < min) {
+        const n = d || 1;
+        this.x = o.x + (dx / n) * min;
+        this.z = o.z + (dz / n) * min;
+      }
+    }
+  }
+
+  _move(cmd, dt, factor = 1) {
+    const mag = Math.hypot(cmd.axisX, cmd.axisY);
+    if (mag < 0.2) return;
+    const s = this.cls.speed * factor * Math.min(1, mag) / mag;
+    this.x += cmd.axisX * s * dt;
+    this.z += cmd.axisY * s * dt;
+    this.walkT += dt * (2 + Math.min(1, mag) * 6) * factor;
+    this.moving = true;
   }
 
   // --- state handlers -------------------------------------------------------
 
   _updateIdle(dt, cmd, fx, arrows) {
-    // Horizontal movement.
-    if (Math.abs(cmd.axisX) > 0.18) {
-      this.x += cmd.axisX * this.cls.speed * dt;
-      this.walkT += dt * (2 + Math.abs(cmd.axisX) * 6);
-      this.moving = true;
-    }
+    this._move(cmd, dt);
 
     // Shield up (tank only) — a dedicated button, as per the class design.
     if (cmd.block.held && this.cls.canBlock) {
@@ -174,7 +209,7 @@ export class Player {
         this.state = 'draw';
         this.t = 0;
         this.charge = 0;
-        this.aimBase = this.aim;
+        this.yawTrim = 0;
         this.drawRef = (gyro.active && this.isHuman) ? gyro.snapshot() : null;
         fx.sfx.drawBow();
       }
@@ -197,50 +232,55 @@ export class Player {
     if (this.t >= a.windup + a.active + a.recover) this.state = 'idle';
   }
 
-  _updateDraw(dt, cmd, fx, arrows) {
+  _updateDraw(dt, cmd, opp, fx, arrows) {
     const bow = this.cls.bow;
     this.t += dt;
     this.charge = Math.min(bow.maxCharge, this.charge + dt);
 
-    // GYRO AIMING: aim is the draw-start aim plus the phone-tilt delta.
-    // Vertical tilt gives coarse elevation, horizontal tilt fine trim.
+    // Base elevation: the ballistic solution for the current draw power.
+    let aim = this._solveElevation(opp);
+
+    // GYRO AIMING: offset the solution with the phone-tilt delta taken
+    // since the draw started. Pitch = elevation, yaw = horizontal trim.
     if (gyro.active && this.drawRef) {
       const d = gyro.delta(this.drawRef);
-      this.aim = clamp(
-        this.aimBase + d.pitch * GYRO_PITCH_GAIN + d.yaw * GYRO_YAW_GAIN,
-        AIM_MIN, AIM_MAX,
-      );
+      aim += d.pitch * GYRO_PITCH_GAIN;
+      this.yawTrim = clamp(d.yaw * GYRO_YAW_GAIN, -YAW_TRIM_MAX, YAW_TRIM_MAX);
     }
-    // Fallback / trim: joystick vertical axis (push up = aim up).
-    if (Math.abs(cmd.axisY) > 0.25) {
-      this.aim = clamp(this.aim - cmd.axisY * STICK_AIM_SPEED * dt, AIM_MIN, AIM_MAX);
-    }
+    this.aim = clamp(aim, AIM_MIN, AIM_MAX);
 
     // Slow strafing while drawing.
-    if (Math.abs(cmd.axisX) > 0.18) {
-      this.x += cmd.axisX * this.cls.speed * bow.moveFactor * dt;
-      this.walkT += dt * 4;
-      this.moving = true;
-    }
+    this._move(cmd, dt, bow.moveFactor);
 
     // Release fires. (`!held` also covers taps whose release edge landed
     // on a frame we already consumed.)
     if (cmd.attack.released || !cmd.attack.held) {
-      this._fireArrow(fx, arrows, this.aim, this.charge / bow.maxCharge);
+      this._fireArrow(fx, arrows, this.charge / bow.maxCharge);
       this.state = 'idle';
       this.atkCd = 0.25;
     }
   }
 
+  /** Elevation that lands an arrow on the opponent at current draw power. */
+  _solveElevation(opp) {
+    const bow = this.cls.bow;
+    const v = lerp(bow.minSpeed, bow.maxSpeed,
+      clamp(this.charge / bow.maxCharge, 0.15, 1));
+    const d = Math.hypot(opp.x - this.x, opp.z - this.z);
+    const s = (GRAVITY * d) / (v * v);
+    return s >= 1 ? Math.PI / 4 : 0.5 * Math.asin(s);
+  }
+
   _updateDash(dt, opp, fx) {
     const s = this.cls.special;
     this.t += dt;
-    this.x += this.facing * s.speed * dt;
-    fx.dust(this.x - this.facing * 14, WORLD.groundY, 1);
+    this.x += Math.cos(this.dashDir) * s.speed * dt;
+    this.z += Math.sin(this.dashDir) * s.speed * dt;
+    fx.dust(this.x, this.z, 1);
 
-    if (!this.hitDone && Math.abs(opp.x - this.x) < PLAYER_HALF_W * 2 + 18) {
+    if (!this.hitDone && Math.hypot(opp.x - this.x, opp.z - this.z) < PLAYER_R * 2 + 18) {
       if (tryMeleeHit(this, opp, {
-        range: PLAYER_HALF_W * 2 + 20,
+        range: PLAYER_R * 2 + 20,
         damage: s.damage,
         knockback: s.knockback,
         stun: s.stun,
@@ -260,16 +300,18 @@ export class Player {
       this.state = 'dash';
       this.t = 0;
       this.hitDone = false;
+      this.dashDir = this.heading;
       fx.sfx.dash();
-      fx.dust(this.x, WORLD.groundY, 6);
+      fx.dust(this.x, this.z, 6);
     } else if (s.type === 'triple') {
-      // Archer: instantly loose three full-power arrows in a small spread.
+      // Archer: instantly loose three full-power arrows in a yaw fan.
       if (this.arrows <= 0) {
         this.specialCd = 0.5; // not enough ammo — short retry lock only
         return;
       }
+      const aim = this.aim;
       for (let i = -1; i <= 1; i++) {
-        this._spawnArrow(arrows, this.aim + i * s.spread, 1);
+        this._spawnArrow(arrows, aim, this.heading + i * s.spread, 1);
       }
       this.arrows--;
       this.atkCd = 0.35;
@@ -277,24 +319,27 @@ export class Player {
     }
   }
 
-  _fireArrow(fx, arrows, aim, chargeRatio) {
+  _fireArrow(fx, arrows, chargeRatio) {
     if (this.arrows <= 0) return;
     const c = clamp(chargeRatio, 0.15, 1);
-    this._spawnArrow(arrows, aim, c);
+    this._spawnArrow(arrows, this.aim, this.heading, c);
     this.arrows--;
     fx.sfx.shoot();
   }
 
-  _spawnArrow(arrows, aim, power) {
+  _spawnArrow(arrows, aim, heading, power) {
     const bow = this.cls.bow;
     const speed = lerp(bow.minSpeed, bow.maxSpeed, power);
     const damage = Math.round(lerp(bow.damageMin, bow.damageMax, power));
+    const hv = Math.cos(aim) * speed; // horizontal speed component
     arrows.push(new Arrow(
       this.index,
-      this.x + this.facing * 30,
-      WORLD.groundY - 62, // bow height
-      Math.cos(aim) * speed * this.facing,
-      -Math.sin(aim) * speed,
+      this.x + Math.cos(heading) * 30,
+      BOW_H,
+      this.z + Math.sin(heading) * 30,
+      Math.cos(heading) * hv,
+      Math.sin(aim) * speed,
+      Math.sin(heading) * hv,
       damage,
     ));
   }

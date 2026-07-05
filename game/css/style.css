@@ -62,7 +62,8 @@ html, body {
   justify-content: center;
   gap: 14px;
   padding: max(12px, env(safe-area-inset-top)) 16px max(12px, env(safe-area-inset-bottom));
-  background: radial-gradient(ellipse at center, rgba(30, 27, 75, 0.92), rgba(12, 10, 35, 0.97));
+  /* Semi-transparent so the orbiting 3D city stays visible behind menus. */
+  background: radial-gradient(ellipse at center, rgba(21, 17, 55, 0.72), rgba(12, 10, 35, 0.9));
   color: #f8fafc;
   text-align: center;
   overflow-y: auto;

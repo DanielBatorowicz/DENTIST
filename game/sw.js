@@ -3,7 +3,7 @@
  * Bump VERSION whenever any game file changes to invalidate old caches.
  */
 
-const VERSION = 'arena-duel-v2';
+const VERSION = 'arena-duel-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -21,10 +21,8 @@ const ASSETS = [
   './js/game/combat.js',
   './js/game/ai.js',
   './js/game/match.js',
-  './js/render/renderer.js',
   './js/render/renderer3d.js',
   './js/render/fighter3d.js',
-  './js/render/sprites.js',
   './js/render/effects.js',
   './lib/three.module.min.js',
   './lib/three.core.min.js',

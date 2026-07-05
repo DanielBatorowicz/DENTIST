@@ -3,23 +3,22 @@
  *
  * Each fighter is a small hierarchy of Three.js meshes (capsule torso,
  * sphere head, cylinder limbs, class weapon) animated every frame from the
- * exact same Player state the 2D renderer uses — the simulation stays
- * renderer-agnostic. No model files are loaded; everything is procedural.
+ * Player state — the simulation stays renderer-agnostic. No model files
+ * are loaded; everything is procedural.
  *
  * Hierarchy:
- *   root (world x, facing via rotation.y)
+ *   root (world x/z, heading via rotation.y — local +X is forward)
  *   └─ tilt (death fall / hit-stun wobble via rotation.z)
  *      ├─ legL, legR             pivot at the hip
  *      └─ upper (walk bob)
  *         ├─ torso, head, back arm
  *         ├─ armFront (melee swing) → fist / sword
  *         ├─ shield (tank)
- *         └─ bowGroup (archer, rotation.z = aim) + charge ring
+ *         └─ bowGroup (archer, rotation.z = aim elevation)
  */
 
 import * as THREE from '../../lib/three.module.min.js';
 import { PLAYER_COLORS, PLAYER_COLORS_DARK, clamp } from '../game/config.js';
-import { swingAngle } from './sprites.js';
 
 const SKIN = 0xfcd9b8;
 
@@ -27,7 +26,18 @@ function std(color, opts = {}) {
   return new THREE.MeshStandardMaterial({ color, roughness: 0.7, metalness: 0.05, ...opts });
 }
 
-/** Punch extension for the brawler — same curve as the 2D renderer. */
+/** Melee swing angle (radians) for the current attack phase. */
+export function swingAngle(p) {
+  const a = p.cls.attack;
+  const REST = 0.6, BACK = -2.0, FRONT = 1.15;
+  const t = p.t;
+  if (p.state !== 'attack') return REST;
+  if (t < a.windup) return REST + (BACK - REST) * (t / a.windup);
+  if (t < a.windup + a.active) return BACK + (FRONT - BACK) * ((t - a.windup) / a.active);
+  return FRONT + (REST - FRONT) * clamp((t - a.windup - a.active) / a.recover, 0, 1);
+}
+
+/** Punch extension for the brawler. */
 function punchExt(p) {
   const a = p.cls.attack;
   if (p.state === 'dash') return a.range;
@@ -119,7 +129,6 @@ export class Fighter3D {
         if (p.cls.id === 'tank') {
           this.shield = new THREE.Group();
           const plate = new THREE.Mesh(new THREE.BoxGeometry(5, 56, 32), metalMat);
-          // Round the silhouette a bit with a chamfered second plate.
           const rim = new THREE.Mesh(new THREE.BoxGeometry(3, 62, 26), darkMat);
           const boss = new THREE.Mesh(new THREE.SphereGeometry(6, 8, 8), darkMat);
           boss.position.x = 4;
@@ -149,9 +158,12 @@ export class Fighter3D {
         this.bowGroup.add(this.nock);
         this.upper.add(this.bowGroup);
 
-        // Charge ring above the head (yellow -> green at full draw).
+        // Charge ring above the head, lying flat so the elevated camera
+        // reads it well (yellow -> green at full draw).
         this.ringMat = new THREE.MeshBasicMaterial({ color: 0xfde047 });
-        this.ring = new THREE.Mesh(new THREE.TorusGeometry(11, 1.6, 6, 20), this.ringMat);
+        const ringGeo = new THREE.TorusGeometry(12, 1.8, 6, 20);
+        ringGeo.rotateX(Math.PI / 2);
+        this.ring = new THREE.Mesh(ringGeo, this.ringMat);
         this.ring.position.y = 126;
         this.ring.visible = false;
         this.tilt.add(this.ring);
@@ -169,11 +181,16 @@ export class Fighter3D {
     return m;
   }
 
-  /** Mirror the Player state onto the rig. Called once per rendered frame. */
-  sync(time) {
+  /**
+   * Mirror the Player state onto the rig. Called once per rendered frame.
+   * @param {(x:number, y:number, z:number)=>THREE.Vector3} toScene world->scene mapper
+   */
+  sync(time, toScene) {
     const p = this.player;
-    this.root.position.set(p.x - 500, 0, 0);
-    this.root.rotation.y = p.facing === 1 ? 0 : Math.PI;
+    const v = toScene(p.x, 0, p.z);
+    this.root.position.copy(v);
+    // Local +X forward: heading h means direction (cos h, sin h) on x/z.
+    this.root.rotation.y = -p.heading;
 
     // Death fall / hit-stun wobble.
     if (p.state === 'dead') {
@@ -184,7 +201,7 @@ export class Fighter3D {
       this.tilt.rotation.z = 0;
     }
 
-    // Walk cycle.
+    // Walk/run cycle.
     const swing = p.moving ? Math.sin(p.walkT * 10) * 0.6 : 0.08;
     this.legL.rotation.z = swing;
     this.legR.rotation.z = p.moving ? -swing : -0.08;

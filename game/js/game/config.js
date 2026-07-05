@@ -1,16 +1,15 @@
 /**
  * config.js — all gameplay tuning in one place.
  *
- * The simulation runs in a fixed logical world of 1000x560 units; the
- * renderer letterboxes and scales it to the physical screen, so gameplay
- * is identical on every device and aspect ratio.
+ * The game simulates a free-roam 3D arena: a town plaza. Coordinates are
+ * world units with x = east, z = south and y = up (0 = ground). Players
+ * move freely on the x/z plane; arrows fly with real 3D ballistics.
  */
 
 export const WORLD = {
-  width: 1000,
-  height: 560,
-  groundY: 480,   // y of the floor (player feet)
-  wallPad: 45,    // min distance of a player from the arena edge
+  width: 1100,   // arena size along x
+  depth: 700,    // arena size along z
+  wallPad: 60,   // min distance of a player from the arena edge
 };
 
 export const GRAVITY = 1500;          // arrow gravity (units/s^2)
@@ -19,11 +18,34 @@ export const ROUND_INTRO_TIME = 2.4;  // 3-2-1 countdown length (s)
 export const ROUND_END_TIME = 2.4;    // pause after a round is decided (s)
 export const HIT_STUN = 0.34;         // default stagger after taking a hit (s)
 export const KB_DECAY = 8;            // knockback velocity decay rate
-export const PLAYER_HALF_W = 22;      // half-width of the player hurtbox
-export const PLAYER_HEIGHT = 100;     // hurtbox height above the feet
+export const PLAYER_R = 20;           // body radius (movement & hurtbox)
+export const PLAYER_HEIGHT = 105;     // hurtbox height above the feet
+export const BOW_H = 62;              // height arrows are fired from
+export const TURN_SPEED = 12;         // heading tracking speed (rad/s)
 
-// Spawn positions at the start of every round.
-export const SPAWN_X = [260, 740];
+// Melee connects only inside this frontal cone (dot-product threshold).
+export const MELEE_CONE = 0.45;   // ~63° half-angle
+// A shield protects against attacks arriving inside this frontal cone.
+export const BLOCK_CONE = 0.35;   // ~70° half-angle
+
+// Round-start spawn points, facing each other across the plaza.
+export const SPAWN = [
+  { x: 270, z: 350 },
+  { x: 830, z: 350 },
+];
+
+/**
+ * Solid props on the plaza. Players cannot walk through them and arrows
+ * are stopped by them (cover!). Cylindrical collision: radius r, height h.
+ * The renderer builds matching visuals from `type`.
+ */
+export const OBSTACLES = [
+  { x: 550, z: 350, r: 62, h: 40, type: 'fountain' },
+  { x: 315, z: 165, r: 26, h: 42, type: 'crate' },
+  { x: 795, z: 535, r: 26, h: 42, type: 'crate' },
+  { x: 330, z: 555, r: 20, h: 48, type: 'barrel' },
+  { x: 780, z: 155, r: 20, h: 48, type: 'barrel' },
+];
 
 /**
  * Character classes. All four are defined by data so balancing is a matter
@@ -97,19 +119,20 @@ export const CLASSES = {
     },
     special: {
       name: 'Potrójny strzał', icon: '⚡', cooldown: 8,
-      type: 'triple', spread: 0.09, // radians between the three arrows
+      type: 'triple', spread: 0.12, // radians between the three arrows (yaw)
     },
   },
 };
 
 export const CLASS_LIST = ['brawler', 'sword', 'tank', 'archer'];
 
-// Gyro aim sensitivity: radians of aim change per radian of phone tilt.
-export const GYRO_PITCH_GAIN = 1.1;  // vertical tilt — coarse elevation
-export const GYRO_YAW_GAIN = 0.35;   // horizontal tilt — fine trim
-export const AIM_MIN = -1.25;        // radians (down)
-export const AIM_MAX = 1.4;          // radians (up)
-export const STICK_AIM_SPEED = 2.0;  // fallback aim speed via joystick (rad/s)
+// Gyro aiming (archer): the ballistic elevation towards the opponent is
+// solved automatically; tilting the phone adjusts it around that solution.
+export const GYRO_PITCH_GAIN = 1.0;  // vertical tilt — elevation offset
+export const GYRO_YAW_GAIN = 0.8;    // horizontal tilt — left/right trim
+export const AIM_MIN = -0.5;         // radians below horizontal
+export const AIM_MAX = 1.35;         // radians above horizontal
+export const YAW_TRIM_MAX = 0.5;     // max horizontal trim (radians)
 
 // Player identity colors.
 export const PLAYER_COLORS = ['#3b82f6', '#ef4444'];
@@ -117,3 +140,11 @@ export const PLAYER_COLORS_DARK = ['#1d4ed8', '#b91c1c'];
 
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export const lerp = (a, b, t) => a + (b - a) * t;
+
+/** Shortest-arc angle difference a→b, in (-PI, PI]. */
+export function angleDiff(a, b) {
+  let d = (b - a) % (Math.PI * 2);
+  if (d > Math.PI) d -= Math.PI * 2;
+  if (d < -Math.PI) d += Math.PI * 2;
+  return d;
+}

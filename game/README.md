@@ -1,16 +1,17 @@
-# ⚔️ Arena Duel — mobilna zręcznościowa gra 1v1 PvP
+# ⚔️ Arena Duel — mobilna zręcznościowa gra 1v1 PvP w otwartym świecie 3D
 
-Szybkie, lokalne pojedynki dwóch graczy na jednym telefonie (lub gracz vs bot).
-Widok z boku (side-scroller 2D), cztery klasy postaci, celowanie łukiem za pomocą
-**żyroskopu**, mecze do **3 wygranych rund**.
+Szybkie, lokalne pojedynki dwóch graczy na jednym telefonie (lub gracz vs bot)
+na **otwartym placu miejskim 3D**: swobodne poruszanie się we wszystkich
+kierunkach, osłony (fontanna, skrzynie, beczki) zatrzymujące strzały, miasto
+z oświetlonymi oknami dookoła i kamera podążająca za akcją. Cztery klasy
+postaci, celowanie łukiem **żyroskopem**, mecze do **3 wygranych rund**.
 
 Technologia: **HTML5 + czysty JavaScript (moduły ES)**, bez build stepu i bez
-assetów do pobrania. Grafika renderowana jest w **prawdziwym 3D (WebGL /
-Three.js)** — oświetlona scena z cieniami, mgłą, low-poly górami i pochodniami —
-z automatycznym fallbackiem do renderera Canvas 2D na urządzeniach bez WebGL.
-Three.js jest zvendorowany w `lib/` (gra pozostaje w pełni samowystarczalna
-i działa offline). Gra działa w przeglądarce na Androidzie i iOS, jako PWA
-lub jako natywna aplikacja przez Capacitor.
+assetów do pobrania. Świat renderowany jest w **WebGL (Three.js)** — słońce
+rzucające cienie, latarnie ze światłami punktowymi, mgła, panorama gór i
+proceduralne budynki. Three.js jest zvendorowany w `lib/` (gra pozostaje w
+pełni samowystarczalna i działa offline). Gra działa w przeglądarce na
+Androidzie i iOS, jako PWA lub jako natywna aplikacja przez Capacitor.
 
 ---
 
@@ -22,22 +23,28 @@ gracz 2 po prawej; w trybie vs bot tylko lewy zestaw):
 
 | Kontrolka | Działanie |
 |---|---|
-| 🕹️ Wirtualny joystick | ruch w lewo / w prawo (oś pionowa: korekta celowania łukiem) |
+| 🕹️ Wirtualny joystick | swobodny ruch po placu we wszystkich kierunkach |
 | ⚔️ / 🏹 ATAK | cios wręcz/mieczem; **łucznik: przytrzymaj = naciąganie, puść = strzał** |
 | ⚡ SPECJAL | zdolność specjalna klasy (z czasem odnowienia) |
 | 🛡️ BLOK | tylko klasa *Miecz i tarcza* — dedykowany przycisk zasłony |
 
+Postać automatycznie obraca się w stronę przeciwnika (lock-on), więc joystick
+służy do doskoku, uników i chowania się za osłonami.
+
 ### Celowanie żyroskopem (łucznik)
-W momencie rozpoczęcia naciągania łuku gra zapamiętuje aktualne położenie telefonu
-i celuje **względem niego** — pochylenie w pionie steruje kątem strzału, pochylenie
-w poziomie daje precyzyjną korektę. Podczas naciągania widoczny jest podgląd
-trajektorii lotu strzały (pełna balistyka z grawitacją).
+Gra sama wylicza balistyczny kąt podniesienia potrzebny do trafienia
+przeciwnika przy aktualnej sile naciągu, a **żyroskop nakłada na to poprawkę**:
+w momencie rozpoczęcia naciągania zapamiętywane jest położenie telefonu i
+pochylenie w pionie podnosi/opuszcza strzał, a pochylenie w poziomie odchyla
+go w lewo/prawo (prowadzenie ruchomego celu!). Podczas naciągania widoczny
+jest podgląd trajektorii, który uwzględnia grawitację **i osłony** — dokładnie
+tak poleci prawdziwa strzała. Kontrą jest unik i krycie się za fontanną.
 Na iOS system zapyta o zgodę na czujniki (przycisk 🎯 w menu lub automatycznie
 przy starcie meczu z łucznikiem). **Żyroskop wymaga HTTPS.**
 
 ### Klawiatura (do testów na komputerze)
-- Gracz 1: `A/D` ruch, `W/S` celowanie, `F` atak, `G` blok, `H` specjal
-- Gracz 2: `←/→` ruch, `↑/↓` celowanie, `K` atak, `L` blok, `P` specjal
+- Gracz 1: `W/A/S/D` ruch, `F` atak, `G` blok, `H` specjal
+- Gracz 2: `←↑↓→` ruch, `K` atak, `L` blok, `P` specjal
 
 ## 🧙 Klasy postaci
 
@@ -67,17 +74,15 @@ game/
     │   ├── gyro.js       #   DeviceOrientation → celowanie względne
     │   └── audio.js      #   proceduralne SFX (WebAudio, bez plików)
     ├── game/             # logika rozgrywki (bez renderowania!)
-    │   ├── config.js     #   CAŁY balans i stałe świata
-    │   ├── player.js     #   maszyna stanów wojownika
-    │   ├── combat.js     #   trafienia wręcz, obrażenia, blok
-    │   ├── projectile.js #   balistyka strzał + kolizje
-    │   ├── ai.js         #   bot (rozwiązuje kąt strzału analitycznie)
+    │   ├── config.js     #   CAŁY balans, wymiary areny i lista przeszkód
+    │   ├── player.js     #   maszyna stanów wojownika, ruch x/z, auto-celowanie
+    │   ├── combat.js     #   trafienia w stożku przednim, obrażenia, blok
+    │   ├── projectile.js #   balistyka 3D strzał + kolizje (gracze, osłony)
+    │   ├── ai.js         #   bot: sterowanie wektorowe, kiting, timing łuku
     │   └── match.js      #   rundy, odliczanie, wynik meczu
-    ├── render/           # rysowanie
-    │   ├── renderer3d.js #   scena WebGL: światła, cienie, arena, kamera
+    ├── render/           # rysowanie (WebGL)
+    │   ├── renderer3d.js #   miasto, światła, cienie, kamera podążająca
     │   ├── fighter3d.js  #   proceduralny rig 3D postaci (bez modeli!)
-    │   ├── renderer.js   #   fallback Canvas 2D (brak WebGL)
-    │   ├── sprites.js    #   wektorowe postacie 2D + wspólne krzywe animacji
     │   └── effects.js    #   pulowane cząsteczki (bez alokacji w pętli)
     └── ui/
         ├── hud.js        #   paski HP, punkty rund, banery
@@ -86,19 +91,19 @@ game/
 ```
 
 Zasady projektowe: logika gry nie zna renderera (komunikacja przez fasadę `fx`),
-symulacja działa w stałym świecie logicznym 1000×560 skalowanym do ekranu,
+symulacja działa w świecie logicznym 1100×700 (x/wschód, z/południe, y/góra),
 a wejście gracza, bota i klawiatury ma identyczny format komend.
 
 ### Optymalizacje mobilne
 - stały krok symulacji 60 Hz niezależny od odświeżania ekranu (90/120 Hz OK),
 - `devicePixelRatio` ograniczone do 2 (oszczędność fill-rate),
 - budżet renderera 3D: jedna mapa cieni 1024 px, dwa światła punktowe,
-  cząsteczki i podgląd trajektorii jako `InstancedMesh` (po 1 draw callu),
-  pule meshy strzał — zero alokacji w pętli renderowania,
+  współdzielone tekstury fasad/bruku (canvas), cząsteczki i podgląd
+  trajektorii jako `InstancedMesh` (po 1 draw callu), pule meshy strzał —
+  zero alokacji w pętli renderowania,
 - pula cząsteczek o stałym rozmiarze — brak GC w pętli gry,
-- brak assetów graficznych/dźwiękowych — geometria, tekstura nieba i SFX
+- brak assetów graficznych/dźwiękowych — geometria miasta, tekstury i SFX
   generowane proceduralnie (szybki start, mały cache),
-- automatyczny fallback do Canvas 2D, gdy WebGL jest niedostępny,
 - wyłączone gesty przeglądarki (`touch-action: none`, blokada zoomu i scrolla),
 - automatyczna pauza zegara po zwinięciu karty (brak "teleportacji" po powrocie).
 

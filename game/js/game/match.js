@@ -13,7 +13,7 @@
  */
 
 import {
-  SPAWN_X, ROUNDS_TO_WIN, ROUND_INTRO_TIME, ROUND_END_TIME,
+  SPAWN, ROUNDS_TO_WIN, ROUND_INTRO_TIME, ROUND_END_TIME,
 } from './config.js';
 import { Player, NEUTRAL_CMD } from './player.js';
 import { AiController } from './ai.js';
@@ -53,8 +53,8 @@ export class Match {
   startRound() {
     this.roundNum++;
     this.arrows.length = 0;
-    this.players[0].reset(SPAWN_X[0], 1);
-    this.players[1].reset(SPAWN_X[1], -1);
+    this.players[0].reset(SPAWN[0].x, SPAWN[0].z, 0);
+    this.players[1].reset(SPAWN[1].x, SPAWN[1].z, Math.PI);
     this.phase = 'intro';
     this.phaseT = ROUND_INTRO_TIME;
     this.lastCount = 4;

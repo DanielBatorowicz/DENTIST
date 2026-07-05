@@ -2,13 +2,13 @@
  * ai.js — a lightweight bot for the single-phone practice mode.
  *
  * The bot produces the exact same `cmd` object a human controller does, so
- * the Player code has no idea it is fighting a machine. Behaviour is
- * deliberately simple: keep a class-appropriate distance, attack when in
- * range, occasionally block or use the special. The archer bot solves the
- * ballistic firing angle analytically and adds noise so it can miss.
+ * the Player code has no idea it is fighting a machine. In the free-roam
+ * arena the bot steers on the x/z plane: melee classes close the distance
+ * with a sideways wobble, the archer kites and shoots (bow elevation is
+ * solved by the Player itself, so the bot only times draws and releases).
  */
 
-import { GRAVITY, PLAYER_HALF_W, clamp } from './config.js';
+import { PLAYER_R, clamp } from './config.js';
 
 function makeCmd() {
   return {
@@ -23,7 +23,9 @@ export class AiController {
   constructor() {
     this.cmd = makeCmd();
     this.thinkT = 0;         // decision re-roll timer
-    this.moveDir = 0;
+    this.moveX = 0;          // current steering vector
+    this.moveZ = 0;
+    this.strafe = 1;         // sideways wobble direction
     this.drawing = false;    // archer: currently holding the bow
     this.drawT = 0;
     this.drawTarget = 0.5;   // desired charge time for this shot
@@ -42,21 +44,33 @@ export class AiController {
     return c;
   }
 
+  /** Steering helper: blend approach direction with a sideways wobble. */
+  _steer(me, opp, towards, strafeAmt) {
+    const dx = opp.x - me.x;
+    const dz = opp.z - me.z;
+    const d = Math.hypot(dx, dz) || 1;
+    const nx = dx / d, nz = dz / d;
+    // Perpendicular (strafe) direction.
+    const px = -nz * this.strafe, pz = nx * this.strafe;
+    this.moveX = nx * towards + px * strafeAmt;
+    this.moveZ = nz * towards + pz * strafeAmt;
+  }
+
   _melee(me, opp, dt, c) {
-    const dist = Math.abs(opp.x - me.x);
-    const dir = Math.sign(opp.x - me.x) || 1;
+    const dist = Math.hypot(opp.x - me.x, opp.z - me.z);
     const range = me.cls.attack.range;
 
     this.thinkT -= dt;
     if (this.thinkT <= 0) {
       this.thinkT = 0.15 + Math.random() * 0.3;
+      if (Math.random() < 0.2) this.strafe = -this.strafe;
 
-      // Approach until inside strike range, with a little wobble.
-      if (dist > range * 0.75) this.moveDir = dir;
-      else this.moveDir = (Math.random() < 0.25) ? -dir : 0;
+      // Approach until inside strike range, circling a little.
+      if (dist > range * 0.8) this._steer(me, opp, 1, 0.4);
+      else this._steer(me, opp, Math.random() < 0.25 ? -0.5 : 0, 0.7);
 
       // Strike when close enough.
-      if (dist < range + PLAYER_HALF_W && me.atkCd <= 0 && Math.random() < 0.75) {
+      if (dist < range + PLAYER_R && me.atkCd <= 0 && Math.random() < 0.75) {
         c.attack.pressed = true;
       }
 
@@ -75,28 +89,29 @@ export class AiController {
 
     this.blockT = Math.max(0, this.blockT - dt);
     c.block.held = this.blockT > 0;
-    c.axisX = c.block.held ? 0 : this.moveDir;
+    c.axisX = c.block.held ? 0 : this.moveX;
+    c.axisY = c.block.held ? 0 : this.moveZ;
   }
 
   _archer(me, opp, dt, c) {
-    const dx = Math.abs(opp.x - me.x);
+    const dist = Math.hypot(opp.x - me.x, opp.z - me.z);
 
-    // Kite: stay in a comfortable band.
+    // Kite: stay in a comfortable band, drifting sideways.
     this.thinkT -= dt;
     if (this.thinkT <= 0) {
       this.thinkT = 0.2 + Math.random() * 0.3;
-      const dir = Math.sign(opp.x - me.x) || 1;
-      if (dx < 260) this.moveDir = -dir;
-      else if (dx > 560) this.moveDir = dir;
-      else this.moveDir = (Math.random() < 0.3) ? dir * (Math.random() < 0.5 ? 1 : -1) : 0;
+      if (Math.random() < 0.25) this.strafe = -this.strafe;
+      if (dist < 260) this._steer(me, opp, -1, 0.5);
+      else if (dist > 560) this._steer(me, opp, 1, 0.3);
+      else this._steer(me, opp, 0, Math.random() < 0.6 ? 0.8 : 0);
     }
-    c.axisX = this.moveDir;
+    c.axisX = this.moveX;
+    c.axisY = this.moveZ;
 
     if (this.drawing) {
-      // Keep holding the button, track the target, release at desired charge.
+      // Keep holding the button, release at the desired charge.
       c.attack.held = true;
       this.drawT += dt;
-      me.aim = this._solveAim(me, opp);
       if (this.drawT >= this.drawTarget) {
         c.attack.held = false;
         c.attack.released = true;
@@ -108,27 +123,12 @@ export class AiController {
       this.drawing = true;
       this.drawT = 0;
       // Charge longer for far targets.
-      this.drawTarget = clamp(dx / 700, 0.3, 0.95) * me.cls.bow.maxCharge + 0.1;
+      this.drawTarget = clamp(dist / 700, 0.3, 0.95) * me.cls.bow.maxCharge + 0.1;
     }
 
     // Triple shot when the target is mid-range and ammo allows.
-    if (me.specialCd <= 0 && me.arrows > 1 && dx > 220 && dx < 520 && Math.random() < dt * 0.5) {
-      me.aim = this._solveAim(me, opp);
+    if (me.specialCd <= 0 && me.arrows > 1 && dist > 220 && dist < 520 && Math.random() < dt * 0.5) {
       c.special.pressed = true;
     }
-  }
-
-  /**
-   * Ballistic elevation to hit the opponent (same height, full-draw speed):
-   * angle = 0.5 * asin(g * d / v^2), plus noise so the bot is beatable.
-   */
-  _solveAim(me, opp) {
-    const bow = me.cls.bow;
-    const v = bow.minSpeed + (bow.maxSpeed - bow.minSpeed) *
-      clamp(this.drawTarget / bow.maxCharge, 0, 1);
-    const d = Math.abs(opp.x - me.x);
-    const s = (GRAVITY * d) / (v * v);
-    const angle = s >= 1 ? Math.PI / 4 : 0.5 * Math.asin(s);
-    return angle + (Math.random() - 0.5) * 0.08;
   }
 }
