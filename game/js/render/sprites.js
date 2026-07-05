@@ -27,8 +27,11 @@ export function rr(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-/** Melee swing angle (radians) for the current attack phase. */
-function swingAngle(p) {
+/**
+ * Melee swing angle (radians) for the current attack phase.
+ * Exported because the 3D renderer reuses the same animation curve.
+ */
+export function swingAngle(p) {
   const a = p.cls.attack;
   const REST = 0.6, BACK = -2.0, FRONT = 1.15;
   const t = p.t;

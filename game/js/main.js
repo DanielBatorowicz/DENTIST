@@ -13,8 +13,21 @@ import { Particles } from './render/effects.js';
 import { layoutControls } from './ui/controls.js';
 import { Screens } from './ui/screens.js';
 
-const canvas = document.getElementById('game');
-const renderer = new Renderer(canvas);
+const canvas = document.getElementById('game'); // transparent UI overlay + input surface
+const glCanvas = document.getElementById('gl'); // WebGL scene underneath
+
+// Prefer the 3D renderer; fall back to pure 2D canvas when WebGL (or the
+// vendored three.js module) is unavailable on the device.
+let renderer;
+try {
+  const { Renderer3D } = await import('./render/renderer3d.js');
+  renderer = new Renderer3D(glCanvas, canvas);
+} catch (e) {
+  console.warn('WebGL renderer unavailable — using the 2D fallback.', e);
+  glCanvas.style.display = 'none';
+  renderer = new Renderer(canvas);
+}
+
 const input = new Input(canvas);
 const particles = new Particles();
 const pauseBtn = document.getElementById('pauseBtn');

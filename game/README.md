@@ -4,9 +4,13 @@ Szybkie, lokalne pojedynki dwóch graczy na jednym telefonie (lub gracz vs bot).
 Widok z boku (side-scroller 2D), cztery klasy postaci, celowanie łukiem za pomocą
 **żyroskopu**, mecze do **3 wygranych rund**.
 
-Technologia: **HTML5 Canvas + czysty JavaScript (moduły ES)** — zero zależności,
-zero build stepu, zero assetów do pobrania. Gra działa w przeglądarce na Androidzie
-i iOS, jako aplikacja PWA (offline) lub jako natywna aplikacja przez Capacitor.
+Technologia: **HTML5 + czysty JavaScript (moduły ES)**, bez build stepu i bez
+assetów do pobrania. Grafika renderowana jest w **prawdziwym 3D (WebGL /
+Three.js)** — oświetlona scena z cieniami, mgłą, low-poly górami i pochodniami —
+z automatycznym fallbackiem do renderera Canvas 2D na urządzeniach bez WebGL.
+Three.js jest zvendorowany w `lib/` (gra pozostaje w pełni samowystarczalna
+i działa offline). Gra działa w przeglądarce na Androidzie i iOS, jako PWA
+lub jako natywna aplikacja przez Capacitor.
 
 ---
 
@@ -51,9 +55,10 @@ Cały balans (HP, obrażenia, zasięgi, czasy odnowienia) znajduje się w jednym
 
 ```
 game/
-├── index.html            # powłoka aplikacji (canvas + kontener menu)
+├── index.html            # powłoka: canvas WebGL + przezroczysty canvas UI
 ├── css/style.css         # style menu DOM, ostrzeżenie o orientacji
 ├── manifest.json, sw.js  # PWA: instalacja + tryb offline
+├── lib/                  # zvendorowany Three.js (moduł ES, minified)
 └── js/
     ├── main.js           # punkt wejścia — spina wszystkie moduły
     ├── core/             # warstwa niezależna od gry
@@ -68,9 +73,11 @@ game/
     │   ├── projectile.js #   balistyka strzał + kolizje
     │   ├── ai.js         #   bot (rozwiązuje kąt strzału analitycznie)
     │   └── match.js      #   rundy, odliczanie, wynik meczu
-    ├── render/           # rysowanie (Canvas 2D)
-    │   ├── renderer.js   #   kamera, arena, wstrząsy ekranu
-    │   ├── sprites.js    #   wektorowe postacie i bronie
+    ├── render/           # rysowanie
+    │   ├── renderer3d.js #   scena WebGL: światła, cienie, arena, kamera
+    │   ├── fighter3d.js  #   proceduralny rig 3D postaci (bez modeli!)
+    │   ├── renderer.js   #   fallback Canvas 2D (brak WebGL)
+    │   ├── sprites.js    #   wektorowe postacie 2D + wspólne krzywe animacji
     │   └── effects.js    #   pulowane cząsteczki (bez alokacji w pętli)
     └── ui/
         ├── hud.js        #   paski HP, punkty rund, banery
@@ -85,8 +92,13 @@ a wejście gracza, bota i klawiatury ma identyczny format komend.
 ### Optymalizacje mobilne
 - stały krok symulacji 60 Hz niezależny od odświeżania ekranu (90/120 Hz OK),
 - `devicePixelRatio` ograniczone do 2 (oszczędność fill-rate),
+- budżet renderera 3D: jedna mapa cieni 1024 px, dwa światła punktowe,
+  cząsteczki i podgląd trajektorii jako `InstancedMesh` (po 1 draw callu),
+  pule meshy strzał — zero alokacji w pętli renderowania,
 - pula cząsteczek o stałym rozmiarze — brak GC w pętli gry,
-- brak assetów graficznych/dźwiękowych — wszystko proceduralne (szybki start, mały cache),
+- brak assetów graficznych/dźwiękowych — geometria, tekstura nieba i SFX
+  generowane proceduralnie (szybki start, mały cache),
+- automatyczny fallback do Canvas 2D, gdy WebGL jest niedostępny,
 - wyłączone gesty przeglądarki (`touch-action: none`, blokada zoomu i scrolla),
 - automatyczna pauza zegara po zwinięciu karty (brak "teleportacji" po powrocie).
 

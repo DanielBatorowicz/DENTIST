@@ -51,7 +51,7 @@ export class Particles {
     for (let i = 0; i < n; i++) {
       this.spawn(x + (Math.random() - 0.5) * 20, y - 4,
         (Math.random() - 0.5) * 80, -30 - Math.random() * 60,
-        0.35 + Math.random() * 0.3, 3 + Math.random() * 4, 'rgba(148,131,110,0.7)', -60);
+        0.35 + Math.random() * 0.3, 3 + Math.random() * 4, '#94836e', -60);
     }
   }
 

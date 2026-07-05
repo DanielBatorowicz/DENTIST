@@ -17,6 +17,8 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* WebGL scene at the bottom; #game is a transparent UI/input overlay on top. */
+#gl,
 #game {
   position: fixed;
   inset: 0;
